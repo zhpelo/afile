@@ -18,7 +18,7 @@ if (!isset($config["debug"]) || $config["debug"] == 0) {
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 }
-define("TEMPLATE", ROOT . "/themes/{$config["theme"]}");
+define("TEMPLATE", ROOT . "/Themes/{$config["theme"]}");
 
 //引入通用函数库
 require_once(ROOT.'/Core/Function.php');
