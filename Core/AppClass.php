@@ -31,9 +31,18 @@ class App{
 			}
 			return;
 		}else{
-			// 访问主页
-			return $this->home();
+			if( ADMIN ){
+				//访问网站后台
+				return $this->admin();
+			}else {
+				// 访问主页
+				return $this->home();
+			}
+			
 		}
+	}
+	protected function admin(){
+		include(TEMPLATE."/admin.php");
 	}
 
     protected function home(){

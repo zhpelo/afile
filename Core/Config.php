@@ -14,4 +14,4 @@ $config = array(
     'theme' => 'default',
 );
 
-include ('core.php');
+include ('Core.php');
