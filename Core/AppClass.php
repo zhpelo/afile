@@ -45,6 +45,10 @@ class App{
 		include(TEMPLATE."/receive.php");
 	}
 
+	protected function upload(){
+		include(TEMPLATE."/upload.php");
+	}
+
 
 
 }
