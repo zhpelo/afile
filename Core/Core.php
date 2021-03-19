@@ -19,7 +19,7 @@ if (!isset($config["debug"]) || $config["debug"] == 0) {
     error_reporting(E_ALL);
 }
 define("TEMPLATE", ROOT . "/Themes/{$config["theme"]}");
-
+define("ADMIN_TEMPLATE", ROOT . "/Core/Admin");
 //引入通用函数库
 require_once(ROOT.'/Core/Function.php');
 //引入mysql类库

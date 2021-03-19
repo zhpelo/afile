@@ -31,7 +31,8 @@ class App{
 			}
 			return;
 		}else{
-			if( ADMIN ){
+			
+			if(defined('ADMIN')){
 				//访问网站后台
 				return $this->admin();
 			}else {
@@ -41,8 +42,37 @@ class App{
 			
 		}
 	}
+	//后台管理
 	protected function admin(){
-		include(TEMPLATE."/admin.php");
+		//判断是否登录
+		if(isset($_SESSION['admin_id']) && $_SESSION['admin_id'] > 0){
+			
+			//退出登录
+			if($_GET['do'] == 'logout'){
+				unset($_SESSION['admin_id']);
+				unset($_SESSION['admin']);
+				redirect('?do=login');
+			}
+
+
+
+			include(ADMIN_TEMPLATE."/base.php");
+		}else{
+			if(isPost() && $_GET['do'] == 'login'){
+				$username = $_POST['username'];
+				$password = $_POST['password'];
+				$ret = $this->db->where("username", $username)->where("password", md5(md5($password)))->getOne("admin");
+				if($ret){
+					$_SESSION['admin']['id'] = $_SESSION['admin_id'] = $ret['id'];
+					$_SESSION['admin']['username'] = $ret['username'];
+					$_SESSION['admin']['login_time'] = $ret['login_time'];
+					redirect('?do=base');
+				}else{
+					exit('账号密错误！');
+				}
+			}
+			include(ADMIN_TEMPLATE."/login.php");
+		}
 	}
 
     protected function home(){
