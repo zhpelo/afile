@@ -5,15 +5,6 @@
         <title>文件上传 - SSS.MS</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://cdn.bootcss.com/twitter-bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
-        <script>
-            var _hmt = _hmt || [];
-            (function() {
-                var hm = document.createElement("script");
-                hm.src = "https://hm.baidu.com/hm.js?aee1990949b4537b70ac730a04855783";
-                var s = document.getElementsByTagName("script")[0];
-                s.parentNode.insertBefore(hm, s);
-            })();
-        </script>
         <style>
             #send-box {
                 height: 12rem;
@@ -37,18 +28,15 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/html/sniff">内网嗅探
-                        <span class="badge badge-warning">开发中</span>
+                    <a class="nav-link" href="/html/sniff">设备绑定
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/html/lan">什么是内网共享?</a>
+                    <a class="nav-link" href="/html/lan">帮助中心</a>
                 </li>
-
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         关于我们
