@@ -2,7 +2,7 @@
 class App{
     protected $page=1, $db, $config=array(),$action="", $do="", $id="", $http="http", $sandbox = false;
 
-    protected $actions = ["user","encryption","text","receive","upload"];
+    protected $actions = ["user","encryption","text","login","register","receive","upload"];
 
     public function __construct($db,$config){
         $this->config=$config;
@@ -87,9 +87,52 @@ class App{
     protected function receive(){
 		include(TEMPLATE."/receive.php");
 	}
-
+	protected function login(){
+		include(TEMPLATE."/login.php");
+	}
+	protected function register(){
+		if(isPost()){
+			if(!isset($_POST['username']) || strlen($_POST['username']) > 12 || strlen($_POST['username']) < 4){
+				$this->error('用户名不符合规定，请修改');
+			}
+			if(!isset($_POST['password']) || strlen($_POST['password']) > 24 || strlen($_POST['password']) < 6){
+				$this->error('密码不符合规定，请修改');
+			}
+			if($_POST['password'] != $_POST['password1']){
+				$this->error('两次输入的密码不一致');
+			}
+			//开始写入数据库
+			$data = [
+               "username" 		=> (string)$_POST['username'],
+               "password" 		=> md5( md5((string)$_POST['password'])),
+			   "create_time" 	=> time(),
+			];
+			$ret = $this->db->where("username", $data['username'])->getOne("user");
+			if($ret){
+				$this->error('此用户名已存在');
+			}
+			$user_id =  $this->db->insert('user', $data);
+			if($user_id > 0){
+				$this->success('注册成功，请登录','?do=base');
+			}else{
+				$this->error('注册失败，请重试');
+			}
+		}else{
+			include(TEMPLATE."/register.php");
+		}
+	}
+	
 	protected function upload(){
 		include(TEMPLATE."/upload.php");
+	}
+
+
+	public function error($msg){
+		exit($msg);
+	}
+
+	public function success($msg, $url = null){
+		exit('success：'.$msg);
 	}
 
 

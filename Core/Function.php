@@ -3,7 +3,9 @@
 function p($val)
 {
     echo '<pre>';
-    return var_dump($val);
+    var_dump($val);
+    echo '</pre>';
+    exit();
 }
 
 function clean($string, $level = '1', $chars = FALSE, $leave = "")
