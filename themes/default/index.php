@@ -18,7 +18,7 @@
             </li>
         </ul>
         <div id="send-box">
-            <form class="input-group mb-3 " method="POST" enctype="multipart/form-data">
+            <form class="input-group mb-3" action="?a=upload" method="POST" enctype="multipart/form-data">
                 <div class="input-group mb-3 ">
                     <input type="file" name="file" class="form-control">
                     <div class="input-group-append">
@@ -40,6 +40,17 @@
                 </div>
             </form>
         </div>
+
+        <?php  if(isset($intranet) && $intranet){ ?>
+            <p>内网共享文件</p>
+            <ul>
+            <?php  foreach ($intranet as &$item){  ?>
+                <li>
+                    <a href="#"> <?php echo $item['name']; ?> </a> 
+                </li>
+            <?php }  ?>
+            </ul>
+        <?php  }  ?>
     </div>
 </div>
 <!-- 页面主要内容 end -->

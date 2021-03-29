@@ -122,20 +122,20 @@
 }
 </style>
 <div class="container">
-    <form class="form-signin">
+    <form class="form-signin" method="POST">
         <div class="text-center mb-4">
             <h1 class="h3 mb-3 font-weight-normal">登录</h1>
             <p>如果您还没有账号，请 <a href="?a=register">免费注册.</a></p>
         </div>
 
         <div class="form-label-group">
-            <input type="email" id="inputEmail" class="form-control" placeholder="用户名" required autofocus>
-            <label for="inputEmail">用户名</label>
+            <input type="text" id="username" name="username" class="form-control" placeholder="用户名" required autofocus>
+            <label for="username">用户名</label>
         </div>
 
         <div class="form-label-group">
-            <input type="password" id="inputPassword" class="form-control" placeholder="密码" required>
-            <label for="inputPassword">密码</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="密码" required>
+            <label for="password">密码</label>
         </div>
 
         <div class="checkbox mb-3">
