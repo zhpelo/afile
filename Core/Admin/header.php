@@ -11,6 +11,10 @@
             margin: 0;
         }
 
+        body {
+            background-color: #efefef;
+        }
+
         .nav {
             height: 60px;
             background-color: #1e86d0;
@@ -35,7 +39,8 @@
             margin: 0;
         }
 
-        .nav .l-nav li,.nav .r-nav li {
+        .nav .l-nav li,
+        .nav .r-nav li {
             float: left;
             margin-right: 20px;
         }
@@ -152,6 +157,130 @@
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
+        }
+
+        .block {
+            background-color: #ffff;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .block-header {
+            border-bottom: 1px solid #dedede;
+            padding-bottom: 15px;
+        }
+
+        .block-body {
+            margin-top: 20px;
+        }
+
+        .table {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        .table>tbody>tr>td,
+        .table>tbody>tr>th,
+        .table>tfoot>tr>td,
+        .table>tfoot>tr>th,
+        .table>thead>tr>td,
+        .table>thead>tr>th {
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border-top: 1px solid #ddd;
+        }
+
+        th {
+            text-align: left;
+        }
+
+        .data-list {
+            border: 1px solid #ddd;
+        }
+
+        .data-list>tbody>tr>td,
+        .data-list>tbody>tr>th,
+        .data-list>tfoot>tr>td,
+        .data-list>tfoot>tr>th,
+        .data-list>thead>tr>td,
+        .data-list>thead>tr>th {
+            border: 1px solid #ddd;
+        }
+
+        .table-option {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        .table-option th {
+            vertical-align: top;
+            text-align: left;
+            padding: 20px 10px 20px 0;
+            width: 150px;
+            line-height: 1.3;
+            font-weight: 600;
+        }
+
+        .table-option td {
+            margin-bottom: 9px;
+            padding: 15px 10px;
+            line-height: 1.3;
+            vertical-align: middle;
+        }
+
+        .regular-text {
+            width: 25em;
+        }
+
+        .description {
+            margin: 2px 0 5px;
+            color: #646970;
+        }
+
+        input[type=date],
+        input[type=datetime-local],
+        input[type=datetime],
+        input[type=email],
+        input[type=month],
+        input[type=number],
+        input[type=password],
+        input[type=search],
+        input[type=tel],
+        input[type=text],
+        input[type=time],
+        input[type=url],
+        input[type=week] {
+            padding: 0 8px;
+            line-height: 2;
+            min-height: 30px;
+        }
+
+        .button {
+            border: none;
+            display: inline-block;
+            outline: 0;
+            padding: 8px 18px;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            vertical-align: middle;
+            overflow: hidden;
+            text-decoration: none;
+            color: #fff;
+            background-color: #e9686b;
+            text-align: center;
+            transition: .2s ease-out;
+            cursor: pointer;
+            white-space: nowrap;
+            box-shadow: 0px 2px 6px rgb(0 0 0 / 12%), 0px 1px 2px rgb(0 0 0 / 24%);
+            font-family: '微软雅黑';
+            border-radius: 2px;
         }
     </style>
 </head>

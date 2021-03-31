@@ -99,7 +99,7 @@ function get_real_ip()
             $ip = FALSE;
         }
         for ($i = 0; $i < count($ips); $i++) {
-            if (!eregi("^(10│172.16│192.168).", $ips[$i])) {
+            if (!preg_match("^(10│172.16│192.168).", $ips[$i])) {
                 $ip = $ips[$i];
                 break;
             }
@@ -187,7 +187,7 @@ function zpl_size($size){
 //时间 人性化显示
 function zpl_time($timeOreign){
     if(!is_numeric($timeOreign)){
-        $timeOreign = strtotime($time);
+        $timeOreign = strtotime(time());
     }
 
     $todayTime = strtotime(date('Y-m-d'));
