@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： localhost
--- 生成日期： 2021-03-31 22:13:08
+-- 生成日期： 2021-03-31 23:40:44
 -- 服务器版本： 5.7.26
 -- PHP 版本： 7.3.4
 
@@ -95,6 +95,30 @@ INSERT INTO `zpl_file` (`file_id`, `user_id`, `name`, `md5`, `alias`, `url`, `si
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `zpl_options`
+--
+
+CREATE TABLE `zpl_options` (
+  `option_id` bigint(20) UNSIGNED NOT NULL,
+  `option_name` varchar(191) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
+  `option_value` longtext COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `option_explain` varchar(64) COLLATE utf8mb4_unicode_520_ci DEFAULT NULL COMMENT '配置说明',
+  `autoload` varchar(20) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'yes'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
+--
+-- 转存表中的数据 `zpl_options`
+--
+
+INSERT INTO `zpl_options` (`option_id`, `option_name`, `option_value`, `option_explain`, `autoload`) VALUES
+(1, 'siteurl', 'http://sss.com', '站点网址', 'yes'),
+(2, 'sitename', '文件传输系统', '站点名称', 'yes'),
+(3, 'keywords', '站点关键词', '站点关键词', 'yes'),
+(4, 'description', '站点描述', '站点描述', 'yes');
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `zpl_user`
 --
 
@@ -102,6 +126,10 @@ CREATE TABLE `zpl_user` (
   `user_id` int(10) NOT NULL,
   `username` varchar(12) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `mobile` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `login_time` int(10) DEFAULT NULL,
+  `login_ip` varchar(46) COLLATE utf8_unicode_ci DEFAULT NULL,
   `create_time` int(10) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -109,10 +137,10 @@ CREATE TABLE `zpl_user` (
 -- 转存表中的数据 `zpl_user`
 --
 
-INSERT INTO `zpl_user` (`user_id`, `username`, `password`, `create_time`) VALUES
-(1, 'ssss', '24071be1d50298ad79e18d861f8f403f', 1616859122),
-(2, 'aaaa', '7c3d596ed03ab9116c547b0eb678b247', 1616859564),
-(3, 'test', '14e1b600b1fd579f47433b88e8d85291', 1617197933);
+INSERT INTO `zpl_user` (`user_id`, `username`, `password`, `email`, `mobile`, `login_time`, `login_ip`, `create_time`) VALUES
+(1, 'ssss', '24071be1d50298ad79e18d861f8f403f', NULL, NULL, NULL, NULL, 1616859122),
+(2, 'aaaa', '7c3d596ed03ab9116c547b0eb678b247', NULL, NULL, NULL, NULL, 1616859564),
+(3, 'test', '14e1b600b1fd579f47433b88e8d85291', NULL, NULL, NULL, NULL, 1617197933);
 
 --
 -- 转储表的索引
@@ -129,6 +157,14 @@ ALTER TABLE `zpl_admin`
 --
 ALTER TABLE `zpl_file`
   ADD PRIMARY KEY (`file_id`);
+
+--
+-- 表的索引 `zpl_options`
+--
+ALTER TABLE `zpl_options`
+  ADD PRIMARY KEY (`option_id`),
+  ADD UNIQUE KEY `option_name` (`option_name`),
+  ADD KEY `autoload` (`autoload`);
 
 --
 -- 表的索引 `zpl_user`
@@ -152,6 +188,12 @@ ALTER TABLE `zpl_admin`
 --
 ALTER TABLE `zpl_file`
   MODIFY `file_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+
+--
+-- 使用表AUTO_INCREMENT `zpl_options`
+--
+ALTER TABLE `zpl_options`
+  MODIFY `option_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- 使用表AUTO_INCREMENT `zpl_user`
