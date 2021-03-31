@@ -3,7 +3,7 @@ class App
 {
 	protected $page = 1, $db, $config = array(), $action = "", $do = "", $id = "", $http = "http", $sandbox = false;
 
-	protected $actions = ["user", "encryption", "text", "login", "register", "receive", "upload"];
+	protected $actions = ["user", "encryption", "text", "login", "download", "register", "receive", "upload"];
 
 	public function __construct($db, $config)
 	{
@@ -14,13 +14,16 @@ class App
 
 	public function run()
 	{
+		
 		//判断操作方法
 		if (isset($_GET["a"]) && !empty($_GET["a"])) {
 			// Validate Request
 			$var = explode("/", $_GET["a"]);
+			
 			if (count($var) > 4) return $this->_404();
 			// Removes dots
 			$var[0] = str_replace(".", "", $var[0]);
+			
 			$this->action = clean($var[0], 3, TRUE);
 			// Run Methods
 			if (isset($var[1]) && !empty($var[1])) $this->do = clean($var[1], 3);
@@ -40,12 +43,14 @@ class App
 			}
 		}
 	}
+	public function _404(){
+		exit('404');
+	}
 	//后台管理
 	protected function admin()
 	{
 		//判断是否登录
-		if (1) {
-			// if(isset($_SESSION['admin_id']) && $_SESSION['admin_id'] > 0){
+		if(isset($_SESSION['admin_id']) && $_SESSION['admin_id'] > 0){
 			//退出登录
 			if (isset($_GET['do']) && $_GET['do'] == 'logout') {
 				unset($_SESSION['admin_id']);
@@ -58,12 +63,15 @@ class App
 				include(ADMIN_TEMPLATE . "/base.php");
 			}
 		} else {
-			if (isPost() && $_GET['do'] == 'login') {
+			if (is_post() && $_GET['do'] == 'login') {
 				$username = $_POST['username'];
 				$password = $_POST['password'];
+
+				
 				$ret = $this->db->where("username", $username)->where("password", md5(md5($password)))->getOne("admin");
+
 				if ($ret) {
-					$_SESSION['admin']['id'] = $_SESSION['admin_id'] = $ret['id'];
+					$_SESSION['admin']['id'] = $_SESSION['admin_id'] = $ret['admin_id'];
 					$_SESSION['admin']['username'] = $ret['username'];
 					$_SESSION['admin']['login_time'] = $ret['login_time'];
 					redirect('?do=base');
@@ -79,7 +87,12 @@ class App
 	{
 		$ip = get_real_ip();
 		if($ip){
-			$intranet = $this->db->where("upload_ip", $ip)->where("is_lan", 1)->where("create_time", strtotime("-1 hours"),">")->get("file");
+			$intranet = $this->db->where("upload_ip", $ip)
+								 ->where("is_lan", 1)
+								 ->where("create_time", strtotime("-1 hours"),">")
+								 ->where("expire_time", time(),">")
+								 ->orderBy("create_time","Desc")
+								 ->get("file");
 		}
 		include(TEMPLATE . "/index.php");
 	}
@@ -100,7 +113,7 @@ class App
 	}
 	protected function login()
 	{
-		if (isPost()) {
+		if (is_post()) {
 			if (!isset($_POST['username']) || strlen($_POST['username']) > 12 || strlen($_POST['username']) < 4) {
 				$this->error('用户名不符合规定，请修改');
 			}
@@ -134,7 +147,7 @@ class App
 	}
 	protected function register()
 	{
-		if (isPost()) {
+		if (is_post()) {
 			if (!isset($_POST['username']) || strlen($_POST['username']) > 12 || strlen($_POST['username']) < 4) {
 				$this->error('用户名不符合规定，请修改');
 			}
@@ -167,7 +180,7 @@ class App
 
 	public function upload()
 	{
-		if (isPost()) {
+		if (is_post()) {
 			$md5 = md5_file($_FILES['file']['tmp_name']);
 			$extension = pathinfo($_FILES['file']['name'])['extension'];
 			$save_filename = $md5 . '.' . $extension;
@@ -191,9 +204,10 @@ class App
 			}
 			//开始写入数据库
 			$data = [
-				"user_id" 		=> (int)$_SESSION['user']['user_id'],
+				"user_id" 		=> 0,
 				"name" 		=> $_FILES["file"]["name"],
 				"md5"	=> $md5,
+				"alias"		=> $this->alias(),
 				"suffix"	=> $extension,
 				"size"	=> $_FILES["file"]["size"],
 				"url"	=> $save_filepath . $save_filename,
@@ -203,16 +217,72 @@ class App
 				"create_time" 	=> time(),
 				"expire_time" => $expire_time,
 			];
+			if( isset($_SESSION['is_login']) && $_SESSION['is_login']){
+				$data['user_id'] = (int)$_SESSION['user']['user_id'];
+			}
 			$file_id =  $this->db->insert('file', $data);
 			if ($file_id > 0) {
-				$this->success('文件上传成功');
+				include(TEMPLATE . "/upload_success.php");
 			} else {
 				$this->error('文件上传失败，请重试');
 			}
 		} else {
-			exit('9999');
 			redirect('?do=home');
 		}
+	}
+	public function download(){
+		if( isset($_GET['alias']) && strlen($_GET['alias']) >= 6){
+			$alias = (string)$_GET['alias'];
+			$data = $this->db->where("alias", $alias)->getOne("file");
+			if(!$data) $this->error('找不到此文件');
+			if($data['expire_time'] != NULL && $data['expire_time'] <= time()) {
+				$this->error('文件失效');
+			}
+			
+			if( isset($_GET['c']) && $_GET['c'] == 'download'){
+				$file_dir = ROOT.'/'.$data['url'];
+				//检查文件是否存在 
+				if(!file_exists($file_dir)) {
+					$this->error('文件找不到');
+				} else {  
+					$file = fopen($file_dir,"r"); // 打开文件  
+					// 输入文件标签  
+					Header("Content-type: application/octet-stream");  
+					Header("Accept-Ranges: bytes");  
+					Header("Accept-Length: ".filesize($file_dir));  
+					Header("Content-Disposition: attachment; filename=" . $data['name']);  
+					// 输出文件内容  
+					echo fread($file,filesize($file_dir));  
+					fclose($file);
+				}
+				//给阅后即焚文件 进行设置到期时间
+				if($data['is_only'] == 1){
+					// exit('设置到期时间');
+					$this->db->where("file_id", $data['file_id'])->update("file",['expire_time' => time()]);
+				}
+				return;
+			}
+		}
+		include(TEMPLATE . "/download.php");
+	}
+
+	protected function alias(){
+		$unique = FALSE;
+		$max_loop = 100;
+		$i=0;
+		$alias_length = 6;
+	
+		while (!$unique) {
+			// retry if max attempt reached
+			if($i>=$max_loop) {
+				$alias_length++;
+				$i=0;
+			}
+			$alias = strrand($alias_length);
+			if( !$this->db->where("alias", $alias)->getOne("file") ) $unique=TRUE;
+			$i++;
+		}		
+		return $alias;
 	}
 
 

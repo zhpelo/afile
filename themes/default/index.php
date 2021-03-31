@@ -41,15 +41,26 @@
             </form>
         </div>
 
+        
+
         <?php  if(isset($intranet) && $intranet){ ?>
-            <p>内网共享文件</p>
-            <ul>
-            <?php  foreach ($intranet as &$item){  ?>
-                <li>
-                    <a href="#"> <?php echo $item['name']; ?> </a> 
-                </li>
-            <?php }  ?>
-            </ul>
+            <div class="mt-3">
+                <div class="card">
+                    <div class="card-header">
+                        内网共享文件
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        
+                    
+                        <?php  foreach ($intranet as &$item){  ?>
+                            <li class="list-group-item"><a href="/s/<?php echo $item['alias']; ?>"><?php echo $item['name']; ?></a> </li>
+                        <?php }  ?>
+
+
+                    </ul>
+                </div>
+            </div>
+
         <?php  }  ?>
     </div>
 </div>

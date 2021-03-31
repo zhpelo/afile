@@ -6,7 +6,7 @@ $dbinfo = Array (
     'password' => 'root',
     'db'=> 'sss',
     'port' => 3306,
-    'prefix' => 'wxr_',
+    'prefix' => 'zpl_',
     'charset' => 'utf8'
 );
 

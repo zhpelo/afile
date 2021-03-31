@@ -35,7 +35,7 @@
             margin: 0;
         }
 
-        .nav .l-nav li {
+        .nav .l-nav li,.nav .r-nav li {
             float: left;
             margin-right: 20px;
         }
@@ -171,6 +171,7 @@
         </div>
         <div class="r-nav">
             <ul>
+                <li><a href="?do=333"><?php echo $_SESSION['admin']['username']; ?></a></li>
                 <li><a href="?do=logout">注销</a></li>
             </ul>
         </div>
