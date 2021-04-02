@@ -3,7 +3,7 @@ class App
 {
 	protected $page = 1, $db, $config = array(), $action = "", $do = "", $id = "", $http = "http", $sandbox = false;
 
-	protected $actions = ["user", "encryption", "text", "login", "download", "register", "receive", "upload"];
+	protected $actions = ["user", "encryption", "text", "login","user", "download", "register", "receive", "upload"];
 
 	public function __construct($db, $config)
 	{
@@ -95,6 +95,16 @@ class App
 								 ->get("file");
 		}
 		include(TEMPLATE . "/index.php");
+	}
+
+	public function user()
+	{
+		if( isset($_GET['c']) ){
+			if($_GET['c'] == 'logout'){
+				//推出登录
+			}
+		}
+		include(TEMPLATE . "/user.php");
 	}
 
 	protected function text()

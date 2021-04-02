@@ -59,7 +59,7 @@
                     src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIxMDAiIHdpZHRoPSIxMDAiPjxyZWN0IGZpbGw9InJnYigxNjcsMjI5LDE2MCkiIHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48L3JlY3Q+PHRleHQgeD0iNTAiIHk9IjUwIiBmb250LXNpemU9IjUwIiB0ZXh0LWNvcHk9ImZhc3QiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIHRleHQtcmlnaHRzPSJhZG1pbiIgYWxpZ25tZW50LWJhc2VsaW5lPSJjZW50cmFsIj5BPC90ZXh0Pjwvc3ZnPg=="
                     alt="<?php echo $_SESSION['user']['username'] ?>">
                 <li class="nav-item">
-                    <a class="nav-link" href="/index/user/index"><?php echo $_SESSION['user']['username'] ?></a>
+                    <a class="nav-link" href="?a=user&c=index"><?php echo $_SESSION['user']['username'] ?></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="?a=user&c=logout">注销</a>
