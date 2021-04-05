@@ -99,10 +99,56 @@ class App
 
 	public function user()
 	{
+		//不登录不允许访问
+		if(!isset($_SESSION['is_login']) && !$_SESSION['is_login']){
+			redirect('?a=login');
+		}
 		if( isset($_GET['c']) ){
 			if($_GET['c'] == 'logout'){
-				//推出登录
+				//退出
+				unset($_SESSION['is_login']);
+				unset($_SESSION['user']);
+				redirect('?a=login');
 			}
+			if($_GET['c'] == 'index'){
+				if (is_post()) {
+					if (!isset($_POST['nickname']) || strlen($_POST['nickname']) > 12 || strlen($_POST['nickname']) < 4) {
+						$this->error('用户名不符合规定，请修改');
+					}
+					if ($_POST['bio'] != '' && (strlen($_POST['bio']) > 24 || strlen($_POST['bio']) < 6) ) {
+						$this->error('个人简介不符合规定，请修改');
+					}
+					$nickname = (string)$_POST['nickname'];
+					$bio = (string)$_POST['bio'];
+
+					$this->db->where("user_id", $_SESSION['user']['user_id'])->update("user",['nickname' =>$nickname ,'bio' =>$bio]);
+					$this->success('修改成功', );
+				}else{
+					$template_data = $this->db->where("user_id", $_SESSION['user']['user_id'])->getOne("user");
+				}
+			}
+
+			if($_GET['c'] == 'setpass'){
+				if (is_post()) {
+					if (!isset($_POST['newpassword']) || strlen($_POST['newpassword']) > 24 || strlen($_POST['newpassword']) < 6) {
+						$this->error('新密码不符合规定，请修改');
+					}
+					if (!isset($_POST['newpassword2']) || $_POST['newpassword2'] != $_POST['newpassword']) {
+						
+					}
+					$user = $this->db->where("user_id", $_SESSION['user']['user_id'])->getOne("user");
+					if($user['password'] != md5(md5((string)$_POST['oldpassword'])) ){
+						$this->error('旧密码不正确');
+					}
+					$this->db->where("user_id",$user['user_id'])->update("user",['password' => md5(md5((string)$_POST['newpassword']))] );
+					$this->success('密码修改成功', );
+				}
+			}
+
+			if($_GET['c'] == 'file'){
+				exit('0000');
+			}
+
 		}
 		include(TEMPLATE . "/user.php");
 	}
