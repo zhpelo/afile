@@ -146,14 +146,16 @@ class App
 			}
 
 			if($_GET['c'] == 'file'){
-				exit('0000');
+				$template_data = $this->db->where("user_id", $_SESSION['user']['user_id'])
+										->orderBy("create_time","Desc")
+										->get("file");
 			}
 
 		}
 		include(TEMPLATE . "/user.php");
 	}
 
-	protected function text()
+	protected function text()   
 	{
 		include(TEMPLATE . "/text.php");
 	}
@@ -237,16 +239,6 @@ class App
 	public function upload()
 	{
 		if (is_post()) {
-			$md5 = md5_file($_FILES['file']['tmp_name']);
-			$extension = pathinfo($_FILES['file']['name'])['extension'];
-			$save_filename = $md5 . '.' . $extension;
-			$save_filepath = 'upload/' . date('Y/m/d/', time());
-			//开始创建文件目录
-			sss_mkdir($save_filepath);
-			//移动临时文件到 指定目录
-			$ret = move_uploaded_file($_FILES["file"]["tmp_name"], $save_filepath . $save_filename);
-			if (!$ret) $this->error('文件上传失败');
-
 			$is_lan = isset($_POST['isLAN']) && $_POST['isLAN'] ?: 0;
 			$is_only = isset($_POST['time']) && $_POST['time'] == 1 ?: 0;
 			$expire_time = NULL;
@@ -258,29 +250,62 @@ class App
 					$expire_time = strtotime("+7 day");
 				}
 			}
-			//开始写入数据库
-			$data = [
-				"user_id" 		=> 0,
-				"name" 		=> $_FILES["file"]["name"],
-				"md5"	=> $md5,
-				"alias"		=> $this->alias(),
-				"suffix"	=> $extension,
-				"size"	=> $_FILES["file"]["size"],
-				"url"	=> $save_filepath . $save_filename,
-				"is_lan"	=> $is_lan,
-				"upload_ip" => get_real_ip(),
-				"is_only"	=> $is_only,
-				"create_time" 	=> time(),
-				"expire_time" => $expire_time,
-			];
-			if( isset($_SESSION['is_login']) && $_SESSION['is_login']){
-				$data['user_id'] = (int)$_SESSION['user']['user_id'];
-			}
-			$file_id =  $this->db->insert('file', $data);
-			if ($file_id > 0) {
-				include(TEMPLATE . "/upload_success.php");
-			} else {
-				$this->error('文件上传失败，请重试');
+
+			if( isset($_GET['c']) && $_GET['c'] == 'text'){
+				//开始写入数据库
+				$data = [
+					"user_id" 		=> 0,
+					"alias"		=> $this->alias(),
+					"content"	=> htmlentities((string)$_POST['text']),
+					"is_lan"	=> $is_lan,
+					"upload_ip" => get_real_ip(),
+					"is_only"	=> $is_only,
+					"create_time" 	=> time(),
+					"expire_time" => $expire_time,
+				];
+				if( isset($_SESSION['is_login']) && $_SESSION['is_login']){
+					$data['user_id'] = (int)$_SESSION['user']['user_id'];
+				}
+				$text_id =  $this->db->insert('text', $data);
+				if ($text_id > 0) {
+					include(TEMPLATE . "/upload_success.php");
+				} else {
+					$this->error('文件上传失败，请重试');
+				}
+			}else{
+				$md5 = md5_file($_FILES['file']['tmp_name']);
+				$extension = pathinfo($_FILES['file']['name'])['extension'];
+				$save_filename = $md5 . '.' . $extension;
+				$save_filepath = 'upload/' . date('Y/m/d/', time());
+				//开始创建文件目录
+				sss_mkdir($save_filepath);
+				//移动临时文件到 指定目录
+				$ret = move_uploaded_file($_FILES["file"]["tmp_name"], $save_filepath . $save_filename);
+				if (!$ret) $this->error('文件上传失败');
+				//开始写入数据库
+				$data = [
+					"user_id" 		=> 0,
+					"name" 		=> $_FILES["file"]["name"],
+					"md5"	=> $md5,
+					"alias"		=> $this->alias(),
+					"suffix"	=> $extension,
+					"size"	=> $_FILES["file"]["size"],
+					"url"	=> $save_filepath . $save_filename,
+					"is_lan"	=> $is_lan,
+					"upload_ip" => get_real_ip(),
+					"is_only"	=> $is_only,
+					"create_time" 	=> time(),
+					"expire_time" => $expire_time,
+				];
+				if( isset($_SESSION['is_login']) && $_SESSION['is_login']){
+					$data['user_id'] = (int)$_SESSION['user']['user_id'];
+				}
+				$file_id =  $this->db->insert('file', $data);
+				if ($file_id > 0) {
+					include(TEMPLATE . "/upload_success.php");
+				} else {
+					$this->error('文件上传失败，请重试');
+				}
 			}
 		} else {
 			redirect('?do=home');
@@ -289,11 +314,22 @@ class App
 	public function download(){
 		if( isset($_GET['alias']) && strlen($_GET['alias']) >= 6){
 			$alias = (string)$_GET['alias'];
-			$data = $this->db->where("alias", $alias)->getOne("file");
+
+			if( isset($_GET['c']) && $_GET['c'] == 'text'){
+				$data = $this->db->where("alias", $alias)->getOne("text");
+			}else{
+				$data = $this->db->where("alias", $alias)->getOne("file");
+			}
+
 			if(!$data) $this->error('找不到此文件');
 			if($data['expire_time'] != NULL && $data['expire_time'] <= time()) {
 				$this->error('文件失效');
 			}
+
+
+			
+
+			
 			
 			if( isset($_GET['c']) && $_GET['c'] == 'download'){
 				$file_dir = ROOT.'/'.$data['url'];

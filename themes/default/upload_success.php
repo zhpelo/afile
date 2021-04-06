@@ -10,14 +10,20 @@
     </div>
 
     <div class="shadow p-3 mb-5 bg-white rounded">
+        <?php if (isset($_GET['c']) && $_GET['c'] == 'text') { ?>
+            <p>提取码：<?php echo $data['alias']; ?></p>
+            <p>直达链接：http://sss.com/t/<?php echo $data['alias']; ?></p>
+            <p>二维码：<img width="160" src="https://api.pwmqr.com/qrcode/create/?url=http://sss.com/s/<?php echo $data['alias']; ?>"></p>
+        
+        <?php }else{ ?>
 
-
-
-        <p>文件名：<?php echo $data['name']; ?></p>
-        <p>提取码：<?php echo $data['alias']; ?></p>
-        <p>直达链接：http://sss.com/s/<?php echo $data['alias']; ?></p>
-        <p>二维码：<img width="160" src="https://api.pwmqr.com/qrcode/create/?url=http://sss.com/s/<?php echo $data['alias']; ?>"></p>
-
+            <p>文件名：<?php echo $data['name']; ?></p>
+            <p>提取码：<?php echo $data['alias']; ?></p>
+            <p>直达链接：http://sss.com/s/<?php echo $data['alias']; ?></p>
+            <p>二维码：<img width="160" src="https://api.pwmqr.com/qrcode/create/?url=http://sss.com/s/<?php echo $data['alias']; ?>"></p>
+        
+        
+        <?php } ?>
 
 
         <a class="btn btn-warning" href="/">返回继续上传文件</a>

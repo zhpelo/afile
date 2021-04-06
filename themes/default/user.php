@@ -76,82 +76,111 @@
             <div class="card">
                 <div class="card-header"> 个人资料 </div>
                 <div class="card-body">
-                <form method="POST">
 
-                    <?php  if($_GET['c'] == 'index'){ ?>
-                        
-                        <div class="form-group row">
-                            <label for="staticEmail" class="col-sm-2 col-form-label">用户名</label>
-                            <div class="col-sm-5">
-                                <input type="text" readonly class="form-control-plaintext"  value="<?php echo $_SESSION['user']['username']; ?>">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputNickname" class="col-sm-2 col-form-label">昵称</label>
-                            <div class="col-sm-5">
-                                <input type="text" name="nickname" class="form-control" id="inputNickname" value="<?php echo $template_data['nickname']; ?>">
-                            </div>
-                        </div>
 
-                        <div class="form-group row">
-                            <label for="inputBio" class="col-sm-2 col-form-label">个人简介</label>
-                            <div class="col-sm-5">
-                                <input type="text" name="bio" class="form-control" id="inputBio" value="<?php echo $template_data['bio']; ?>" >
+                    <?php if ($_GET['c'] == 'index') { ?>
+                        <form method="POST">
+                            <div class="form-group row">
+                                <label for="staticEmail" class="col-sm-2 col-form-label">用户名</label>
+                                <div class="col-sm-5">
+                                    <input type="text" readonly class="form-control-plaintext" value="<?php echo $_SESSION['user']['username']; ?>">
+                                </div>
                             </div>
-                        </div>
+                            <div class="form-group row">
+                                <label for="inputNickname" class="col-sm-2 col-form-label">昵称</label>
+                                <div class="col-sm-5">
+                                    <input type="text" name="nickname" class="form-control" id="inputNickname" value="<?php echo $template_data['nickname']; ?>">
+                                </div>
+                            </div>
 
-                        <div class="form-group row">
-                            <label for="inputPassword" class="col-sm-2 col-form-label">邮箱</label>
-                            <div class="col-sm-5">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" readonly>
-                                    <div class="input-group-append">
-                                        <button class="btn btn-warning col-sm-12">修改</button>
+                            <div class="form-group row">
+                                <label for="inputBio" class="col-sm-2 col-form-label">个人简介</label>
+                                <div class="col-sm-5">
+                                    <input type="text" name="bio" class="form-control" id="inputBio" value="<?php echo $template_data['bio']; ?>">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="inputPassword" class="col-sm-2 col-form-label">邮箱</label>
+                                <div class="col-sm-5">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" readonly>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-warning col-sm-12">修改</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="form-group row">
-                            <label for="inputPassword" class="col-sm-2 col-form-label">手机号</label>
-                            <div class="col-sm-5">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" readonly>
-                                    <div class="input-group-append">
-                                        <button class="btn btn-warning col-sm-12">修改</button>
+                            <div class="form-group row">
+                                <label for="inputPassword" class="col-sm-2 col-form-label">手机号</label>
+                                <div class="col-sm-5">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" readonly>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-warning col-sm-12">修改</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-
-                        
-                       
-                    <?php  }elseif($_GET['c'] == 'setpass' ) { ?>
-                        <div class="form-group row">
-                            <label  class="col-sm-2 col-form-label">原密码</label>
-                            <div class="col-sm-5">
-                                <input type="password" name="oldpassword" class="form-control" >   
+                            <button class="btn btn-warning" type="submit">保存修改</button>
+                        </form>
+                    <?php  } elseif ($_GET['c'] == 'setpass') { ?>
+                        <form method="POST">
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">原密码</label>
+                                <div class="col-sm-5">
+                                    <input type="password" name="oldpassword" class="form-control">
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <label  class="col-sm-2 col-form-label">新密码</label>
-                            <div class="col-sm-5">
-                                <input type="password" name="newpassword" class="form-control" >
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">新密码</label>
+                                <div class="col-sm-5">
+                                    <input type="password" name="newpassword" class="form-control">
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group row">
-                            <label for="inputBio" class="col-sm-2 col-form-label">确认新密码</label>
-                            <div class="col-sm-5">
-                                <input type="password" name="newpassword2" class="form-control" >
+                            <div class="form-group row">
+                                <label for="inputBio" class="col-sm-2 col-form-label">确认新密码</label>
+                                <div class="col-sm-5">
+                                    <input type="password" name="newpassword2" class="form-control">
+                                </div>
                             </div>
-                        </div>
+                            <button class="btn btn-warning" type="submit">保存修改</button>
+                        </form>
+                    <?php  } elseif ($_GET['c'] == 'file') { ?>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">文件名</th>
+                                    <th scope="col">文件大小</th>
+                                    <th scope="col">上传日期</th>
+                                    <th scope="col">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php  foreach ($template_data as &$item){  ?>
+                                <tr>
+                                    <th scope="row"><?php echo $item['file_id']; ?></th>
+                                    <td><a href="/s/<?php echo $item['alias']; ?>"><?php echo $item['name']; ?></a> </td>
+                                    <td><?php echo zpl_size($item['size']); ?></td>
+                                    <td><?php echo zpl_time($item['create_time']); ?></td>
+                                    <td>
+                                        <a href="#">删除</a>
+                                        <a href="#">关闭</a>
+                                    </td>
+                                </tr>
+                                
+                                <?php }  ?>
+                                
+                            </tbody>
+                        </table>
+
                     <?php } ?>
 
-                    <button class="btn btn-warning" type="submit">保存修改</button>
 
-                    </form>
                 </div>
 
             </div>

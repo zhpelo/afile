@@ -26,7 +26,8 @@
                     </div>
                 </div>
                 <div class="form-check form-check-inline">
-                    <label class="form-check-label" for="time" style="width: 10rem">文件有效期</label> <select id="time" name="time" class="form-control">
+                    <label class="form-check-label" for="time" style="width: 10rem">文件有效期</label> 
+                    <select id="time" name="time" class="form-control">
                         <option value="1" selected>阅后即焚</option>
                         <option value="1d">一天</option>
                         <option value="7d">一周</option>
