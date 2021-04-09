@@ -3,11 +3,13 @@ class App
 {
 	protected $page = 1, $db, $config = array(), $action = "", $do = "", $id = "", $http = "http", $sandbox = false;
 
-	protected $actions = ["user", "encryption", "text", "login","user", "download", "register", "receive", "upload"];
+	protected $actions = ["user", "encryption", "text", "login","user","file", "download", "register", "receive", "upload"];
 
 	public function __construct($db, $config)
 	{
-		$this->config = $config;
+		global $web_config;
+		
+		$this->config = array_merge($config,$web_config);
 		$this->db = $db;
 		$this->db->object = TRUE;
 	}
@@ -58,6 +60,12 @@ class App
 				redirect('?do=login');
 			}
 			if (isset($_GET['do']) &&  strlen($_GET['do']) >= 4) {
+				if (is_post() && $_GET['do'] == 'system') {
+					foreach($_POST as $name=>$value){
+						$this->db->where("option_name", $name)->update('options',['option_value' => $value]);
+					}
+					$this->success('修改成功');
+				}
 				include(ADMIN_TEMPLATE . "/" . $_GET['do'] . ".php");
 			} else {
 				include(ADMIN_TEMPLATE . "/base.php");
@@ -153,6 +161,67 @@ class App
 
 		}
 		include(TEMPLATE . "/user.php");
+	}
+
+	protected function file()
+	{
+		//不登录不允许访问
+		if(!isset($_SESSION['is_login']) && !$_SESSION['is_login']){
+			redirect('?a=login');
+		}
+		if( isset($_GET['c']) && $_GET['c'] != 'index'){
+			
+			if($_GET['c'] == 'add_folder'){
+				if (is_post()) {
+					
+					//开始写入数据库
+					$data = [
+						"parent_id" 	=> (int)$_POST['parent_id'] ?: 0,
+						"user_id"		=> (int)$_SESSION['user']['user_id'],
+						"folder_name"	=> (string)$_POST['folder_name'] ,
+						"access_password" => (strlen($_POST['access_password']) >= 4) ? (string)$_POST['access_password'] : null,
+						"is_public" 	=> (int)$_POST['is_public'] ?: 1,
+						"total_size" 	=> 0,
+						"status"		=> "active",
+						"create_time" 	=> time(),
+						"update_time" 	=> time(),
+					];
+					$ret = $this->db->where("user_id", $data['user_id'])
+									->where("parent_id", $data['parent_id'])
+									->where("folder_name", $data['folder_name'])
+									->getOne("file_folder");
+					if ($ret) {
+						$this->error('此文件夹已存在');
+					}
+					$folder_id =  $this->db->insert('file_folder', $data);
+					if ($folder_id > 0) {
+						$this->success('成功', '?a=file&c=index');
+					} else {
+						echo "Last executed query was ". $this->db->getLastQuery();
+						$this->error('新建文件夹失败，请重试');
+						
+					}
+				}
+			}
+
+			if($_GET['c'] == 'trash'){
+				
+			}
+
+		}else{
+			$parent_id = (isset($_GET['parent_id']) && $_GET['parent_id'] > 0) ?: 0;
+			$template_data['folder'] = $this->db->where("user_id", $_SESSION['user']['user_id'])
+										->where("parent_id", $parent_id)
+										->orderBy("create_time","Desc")
+										->get("file_folder");
+			
+			$template_data['file'] = $this->db->where("user_id", $_SESSION['user']['user_id'])
+										->where("parent_id", $parent_id)
+										->orderBy("create_time","Desc")
+										->get("file");
+			// p($template_data);
+		}
+		include(TEMPLATE . "/file.php");
 	}
 
 	protected function text()   

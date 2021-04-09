@@ -11,26 +11,24 @@ get_admin_header();
             <h3>系统设置</h3>
         </div>
         <div class="block-body">
-
-            <table class="table-option">
-
-                <tbody>
-                    <?php  foreach ($data as &$item){  ?>
-                    <tr>
-                        <th scope="row">
-                            <label for="<?php echo $item['option_name']; ?>"><?php echo $item['option_explain']; ?></label>
-                        </th>
-
-                        <td>
-                            <input name="<?php echo $item['option_name']; ?>" type="text" id="<?php echo $item['option_name']; ?>" value="<?php echo $item['option_value']; ?>" class="regular-text">
-                        </td>
-                    </tr>
-                    <?php }  ?>
-                   
-                </tbody>
-            </table>
-
-            <button type="button" class="button">保存修改</button>
+            <form method="POST">
+                <table class="table-option">
+                    <tbody>
+                        <?php  foreach ($data as &$item){  ?>
+                        <tr>
+                            <th scope="row">
+                                <label for="<?php echo $item['option_name']; ?>"><?php echo $item['option_explain']; ?></label>
+                            </th>
+                            <td>
+                                <input name="<?php echo $item['option_name']; ?>" type="text" id="<?php echo $item['option_name']; ?>" value="<?php echo $item['option_value']; ?>" class="regular-text">
+                            </td>
+                        </tr>
+                        <?php }  ?>
+                    
+                    </tbody>
+                </table>
+                <button type="submit" class="button">保存修改</button>
+            </form>
         </div>
     </div>
 

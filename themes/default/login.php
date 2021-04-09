@@ -1,4 +1,4 @@
-<?php get_header(); ?>
+<?php include(TEMPLATE . "/header.php") ?>
 
 <!-- 页面主要内容 start -->
 <style>
@@ -149,4 +149,4 @@
 </div>
 <!-- 页面主要内容 end -->
 
-<?php get_footer(); ?>
+<?php include(TEMPLATE . "/footer.php") ?>

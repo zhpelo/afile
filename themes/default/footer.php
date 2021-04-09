@@ -1,5 +1,5 @@
 <footer class="text-center" style="margin-top: 160px; margin-bottom: 20px">
-    <p class="copyright">Copyright&nbsp;©&nbsp;2021 Powered by <code>SSS.MS</code></p>
+    <p class="copyright"><?php echo $this->config['copyright'];?></p>
 </footer>
 
 

@@ -1,7 +1,7 @@
-<?php get_header(); ?>
+<?php include(TEMPLATE . "/header.php") ?>
 <!-- 页面主要内容 start -->
 <div class="container">
-    <h1 style="text-align: center;margin: 100px 0;">SSS.MS文件传输</h1>
+    <h1 style="text-align: center;margin: 100px 0;"> <?php echo $this->config['sitename'];?></h1>
     <div class="col-xs-12 col-sm-12 col-md-8 center-block" style="margin: 40px auto;">
         <ul class="nav nav-tabs" style="border-bottom: 0;">
             <li class="nav-item">
@@ -20,7 +20,7 @@
         <div id="send-box">
             <form class="input-group mb-3" action="?a=upload" method="POST" enctype="multipart/form-data">
                 <div class="input-group mb-3 ">
-                    <input type="file" name="file" class="form-control">
+                    <input type="file" name="file" class="form-control" required>
                     <div class="input-group-append">
                         <button class="btn btn-warning col-sm-12" type="submit">文件上传</button>
                     </div>
@@ -66,5 +66,4 @@
     </div>
 </div>
 <!-- 页面主要内容 end -->
-
-<?php get_footer(); ?>
+<?php include(TEMPLATE . "/footer.php") ?>

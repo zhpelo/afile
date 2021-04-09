@@ -1,9 +1,9 @@
-<?php get_header(); ?>
+<?php include(TEMPLATE . "/header.php") ?>
 
 <!-- 页面主要内容 start -->
 
 <div class="container">
-	<h1 style="text-align: center;margin: 100px 0;">SSS.MS文件传输</h1>
+	<h1 style="text-align: center;margin: 100px 0;"><?php echo $this->config['sitename'];?></h1>
 
 	<div class="col-xs-12 col-sm-12 col-md-8 center-block" style="margin: 40px auto;">
 
@@ -39,4 +39,4 @@
 </div>
 <!-- 页面主要内容 end -->
 
-<?php get_footer(); ?>
+<?php include(TEMPLATE . "/footer.php") ?>

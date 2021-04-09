@@ -1,5 +1,6 @@
 location / {
     rewrite ^([^\.]*)/s/(\w+)$ $1/index.php?a=download&alias=$2 last;
+	
 	rewrite ^([^\.]*)/t/(\w+)$ $1/index.php?a=download&c=text&alias=$2 last;
 	if (!-e $request_filename){
 		rewrite  ^/(.*)$  /index.php?a=$1  last;   break;

@@ -25,6 +25,9 @@ require_once(ROOT.'/Core/Function.php');
 //引入mysql类库
 require_once(ROOT.'/Core/MysqliDb.php');
 $db = new Mysqlidb($dbinfo);
-
+//网站后台设置项
+foreach($db->get('options') as $item){
+    $web_config[ $item['option_name'] ] = $item['option_value'];
+}
 include(ROOT."/Core/AppClass.php");
 $app = new App($db,$config);

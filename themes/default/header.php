@@ -7,27 +7,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
 
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js"></script>
-    <style>
-    #send-box {
-        min-height: 12rem;
-        border: 1px solid #dee2e6;
-        padding: 2rem
-    }
-    .text p {
-        text-indent: 2em;
-    }
 
-    .htmlpage h1 {
-        text-align: center;
-        margin: 40px 0;
-    }
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+    <style>
+        #send-box {
+            min-height: 12rem;
+            border: 1px solid #dee2e6;
+            padding: 2rem
+        }
+
+        .text p {
+            text-indent: 2em;
+        }
+
+        .htmlpage h1 {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .sidebar {
+            overflow: hidden;
+            padding: 0 2rem;
+            position: absolute;
+        }
+
+
+        .sidebar-left-nav {
+            /* margin-top: 3rem; */
+        }
+
+        .sidebar-left-nav ul,
+        .sidebar-left-nav li {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-left-nav li {
+            height: 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-left-nav li a {
+            font-size: 14px;
+            color: #333333;
+        }
+
+
+        .sidebar-left-title {
+            color: #a5a5a4;
+            margin-top: 20px;
+        }
+
+        .folder-list .bi {
+            font-size: 2.5rem;
+
+        }
+
+        .folder-list li {
+            list-style: none;
+
+        }
     </style>
+
 </head>
 
 <body>
@@ -66,7 +117,9 @@
                     src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIxMDAiIHdpZHRoPSIxMDAiPjxyZWN0IGZpbGw9InJnYigxNjcsMjI5LDE2MCkiIHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48L3JlY3Q+PHRleHQgeD0iNTAiIHk9IjUwIiBmb250LXNpemU9IjUwIiB0ZXh0LWNvcHk9ImZhc3QiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIHRleHQtcmlnaHRzPSJhZG1pbiIgYWxpZ25tZW50LWJhc2VsaW5lPSJjZW50cmFsIj5BPC90ZXh0Pjwvc3ZnPg=="
                     alt="<?php echo $_SESSION['user']['username'] ?>">
                 <li class="nav-item">
-                    <a class="nav-link" href="?a=user&c=index"><?php echo $_SESSION['user']['username'] ?></a>
+                    <a class="nav-link" href="?a=user&c=index">
+                        <?php echo $_SESSION['user']['username'] ?>
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="?a=user&c=logout">注销</a>

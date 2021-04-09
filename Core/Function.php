@@ -211,3 +211,22 @@ function zpl_time($timeOreign){
     }
     return $str;
 }
+//全站网址生成函数
+function url($path,$data)
+{
+    global $web_config;
+    switch ($path) {
+        case "file_share":
+            $url =  "/s/".$data;
+            break;
+        case "text_share":
+            $url =  "/t/".$data;
+            break;
+        case "green":
+            echo "你喜欢的颜色是绿色!";
+            break;
+        default:
+            $url = '/404.html';
+    }
+    return $web_config['siteurl'].$url;
+}

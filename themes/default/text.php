@@ -1,10 +1,10 @@
-<?php get_header(); ?>
+<?php include(TEMPLATE . "/header.php") ?>
 <!-- include summernote css/js -->
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 <!-- 页面主要内容 start -->
 <div class="container">
-    <h1 style="text-align: center;margin: 100px 0;">SSS.MS文件传输</h1>
+    <h1 style="text-align: center;margin: 100px 0;"><?php echo $this->config['sitename'];?></h1>
     <div class="col-xs-12 col-sm-12 col-md-8 center-block" style="margin: 40px auto;">
         <ul class="nav nav-tabs" style="border-bottom: 0;">
             <li class="nav-item">
@@ -54,4 +54,4 @@
         height: 300
       });
   </script>
-<?php get_footer(); ?>
+<?php include(TEMPLATE . "/footer.php") ?>
