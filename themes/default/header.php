@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>文件上传 - SSS.MS</title>
+    <title><?php echo $this->config['sitename'];?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
@@ -68,22 +68,13 @@
             margin-top: 20px;
         }
 
-        .folder-list .bi {
-            font-size: 2.5rem;
-
-        }
-
-        .folder-list li {
-            list-style: none;
-
-        }
     </style>
 
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/">SSS.MS</a>
+        <a class="navbar-brand" href="/">文件分享系统</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -91,23 +82,25 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/html/sniff">设备绑定
-                    </a>
+                    <a class="nav-link" href="?a=page&page_url=about">网盘介绍</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/html/lan">帮助中心</a>
+                    <a class="nav-link" href="?a=page&page_url=about">广告投放</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="?a=page&page_url=about">合作分成</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                    <a class="nav-link dropdown-toggle" href="?a=page&page_url=about" id="navbarDropdown" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         关于我们
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/html/help">使用帮助</a>
-                        <a class="dropdown-item" href="/html/about">关于我们</a>
-                        <a class="dropdown-item" href="/html/job">加入我们</a>
+                        <a class="dropdown-item" href="?a=page&page_url=about">使用帮助</a>
+                        <a class="dropdown-item" href="?a=page&page_url=about">关于我们</a>
+                        <a class="dropdown-item" href="?a=page&page_url=about">加入我们</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/html/privacy">隐私协议</a>
+                        <a class="dropdown-item" href="?a=page&page_url=about">隐私协议</a>
                     </div>
                 </li>
             </ul>

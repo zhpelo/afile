@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： localhost
--- 生成日期： 2021-04-10 00:23:18
+-- 生成日期： 2021-04-11 21:02:42
 -- 服务器版本： 5.7.26
 -- PHP 版本： 7.3.4
 
@@ -70,9 +70,17 @@ CREATE TABLE `zpl_file` (
 --
 
 INSERT INTO `zpl_file` (`file_id`, `user_id`, `parent_id`, `name`, `md5`, `alias`, `url`, `size`, `suffix`, `is_lan`, `upload_ip`, `is_only`, `create_time`, `expire_time`) VALUES
-(1, 3, 0, '桃花扇.epub', 'c926b358adf96121dd6dde452027d9bc', 'Sbz7LD', 'upload/2021/04/09/c926b358adf96121dd6dde452027d9bc.epub', 1795610, 'epub', 1, '127.0.0.1', 0, 1617977409, NULL),
-(2, 3, 0, '万历朝鲜战争全史.epub', 'ca5dcba2d246ea7d7714a5d448a422ca', 'omorhK', 'upload/2021/04/10/ca5dcba2d246ea7d7714a5d448a422ca.epub', 4811666, 'epub', 1, '127.0.0.1', 0, 1617984923, NULL),
-(3, 3, 0, '万历朝鲜战争全史.epub', 'ca5dcba2d246ea7d7714a5d448a422ca', 'Eqw4Jw', 'upload/2021/04/10/ca5dcba2d246ea7d7714a5d448a422ca.epub', 4811666, 'epub', 1, '127.0.0.1', 0, 1617984940, NULL);
+(12, 3, 0, '科学的隐忧.azw3', 'ae7f4b2a23f035257e3edf7599a6810b', 'c7xHiK', 'upload/ae/ae7f4b2a23f035257e3edf7599a6810b', 4208603, 'azw3', 0, '127.0.0.1', 0, 1618130587, NULL),
+(13, 3, 0, '万历朝鲜战争全史.epub', 'ca5dcba2d246ea7d7714a5d448a422ca', 'NJPqnB', 'upload/ca/ca5dcba2d246ea7d7714a5d448a422ca', 4811666, 'epub', 0, '127.0.0.1', 0, 1618130587, NULL),
+(11, 3, 0, '科学的隐忧.epub', '4cf208046cd764584bf8a49a25f0f357', 'mrZh0g', 'upload/4c/4cf208046cd764584bf8a49a25f0f357', 3295034, 'epub', 0, '127.0.0.1', 0, 1618130587, NULL),
+(14, 3, 0, '万历朝鲜战争全史.azw3', 'de9c9147352da043b13375724251d22e', 'Ry1RS3', 'upload/de/de9c9147352da043b13375724251d22e', 7080311, 'azw3', 0, '127.0.0.1', 0, 1618130587, NULL),
+(15, 3, 0, '万历朝鲜战争全史.mobi', '8035e186240f831e1ea879b35f08bab9', '1EiujQ', 'upload/80/8035e186240f831e1ea879b35f08bab9', 7085133, 'mobi', 0, '127.0.0.1', 0, 1618130587, NULL),
+(16, 3, 0, '三岛由纪夫典藏作品九部（两次入围诺贝尔奖的文学大师三岛由纪夫代表作；日本文学翻译家陈德文先生译本；人民文学重磅出品）.epub', '8f48e1a92dc5c1af90622c274519522e', 'XxqO00', 'upload/8f/8f48e1a92dc5c1af90622c274519522e', 2696707, 'epub', 0, '127.0.0.1', 0, 1618130587, NULL),
+(17, 3, 0, '三岛由纪夫典藏作品九部（两次入围诺贝尔奖的文学大师三岛由纪夫代表作；日本文学翻译家陈德文先生译本；人民文学重磅出品）.mobi', 'fd967226a025b6da0d86acc81cb2953e', '2DPvAp', 'upload/fd/fd967226a025b6da0d86acc81cb2953e', 6169179, 'mobi', 0, '127.0.0.1', 0, 1618130587, NULL),
+(18, 3, 0, '三岛由纪夫典藏作品九部（两次入围诺贝尔奖的文学大师三岛由纪夫代表作；日本文学翻译家陈德文先生译本；人民文学重磅出品）.azw3', '62ea153b3c92e88916abc2a066a103fd', '8NR3it', 'upload/62/62ea153b3c92e88916abc2a066a103fd', 5218762, 'azw3', 0, '127.0.0.1', 0, 1618130587, NULL),
+(19, 3, 0, '优秀到不能被忽视系列套装5册.epub', '78732b0c699e665361df46b17d246b60', 'yfVdFj', 'upload/78/78732b0c699e665361df46b17d246b60', 16399178, 'epub', 0, '127.0.0.1', 0, 1618130587, NULL),
+(20, 3, 0, '优秀到不能被忽视系列套装5册.mobi', '5876620129b0d68c58c3b884352673e0', 'gYsBIJ', 'upload/58/5876620129b0d68c58c3b884352673e0', 24712722, 'mobi', 0, '127.0.0.1', 0, 1618130587, NULL),
+(21, 3, 0, '优秀到不能被忽视系列套装5册.azw3', 'a4d913b69eab4dd229e54faf9216e83d', 'ZBY9hm', 'upload/a4/a4d913b69eab4dd229e54faf9216e83d', 35645563, 'azw3', 0, '127.0.0.1', 0, 1618130587, NULL);
 
 -- --------------------------------------------------------
 
@@ -85,6 +93,7 @@ CREATE TABLE `zpl_file_folder` (
   `user_id` int(11) NOT NULL,
   `parent_id` int(11) DEFAULT NULL,
   `folder_name` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `alias` varchar(6) DEFAULT NULL,
   `total_size` bigint(15) DEFAULT '0',
   `is_public` int(1) NOT NULL DEFAULT '0',
   `access_password` varchar(32) CHARACTER SET utf8 DEFAULT NULL,
@@ -97,8 +106,9 @@ CREATE TABLE `zpl_file_folder` (
 -- 转存表中的数据 `zpl_file_folder`
 --
 
-INSERT INTO `zpl_file_folder` (`folder_id`, `user_id`, `parent_id`, `folder_name`, `total_size`, `is_public`, `access_password`, `status`, `create_time`, `update_time`) VALUES
-(1, 3, 0, '未命名文件夹', 0, 1, NULL, 'active', 1617982497, 1617982497);
+INSERT INTO `zpl_file_folder` (`folder_id`, `user_id`, `parent_id`, `folder_name`, `alias`, `total_size`, `is_public`, `access_password`, `status`, `create_time`, `update_time`) VALUES
+(1, 3, 0, '内部目录', NULL, 0, 0, NULL, 'active', 1618120954, 1618120954),
+(2, 3, 0, '电子书', 'UR4zKS', 0, 1, NULL, 'active', 1618121063, 1618121063);
 
 -- --------------------------------------------------------
 
@@ -124,6 +134,28 @@ INSERT INTO `zpl_options` (`option_id`, `option_name`, `option_value`, `option_e
 (3, 'keywords', '站点关键词', '站点关键词', 'yes'),
 (4, 'description', '站点描述', '站点描述', 'yes'),
 (5, 'copyright', 'Copyright&nbsp;©&nbsp;2021 Powered by <code>SSS.MS</code>', '版权信息', 'yes');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `zpl_page`
+--
+
+CREATE TABLE `zpl_page` (
+  `page_id` int(10) NOT NULL,
+  `page_url` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `content` text COLLATE utf8_unicode_ci NOT NULL,
+  `create_time` int(10) NOT NULL,
+  `update_time` int(10) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- 转存表中的数据 `zpl_page`
+--
+
+INSERT INTO `zpl_page` (`page_id`, `page_url`, `title`, `content`, `create_time`, `update_time`) VALUES
+(2, 'about', '关于我们', '<p>XX于2004年正式涉足电商领域。2014年5月，XX集团在美国纳斯达克证券交易所正式挂牌上市，是中国第一个成功赴美上市的综合型电商平台。</p><p>2020年6月，XX集团在香港联交所二次上市，募集资金约345.58亿港元，用于投资以供应链为基础的关键技术创新，以进一步提升用户体验及提高运营效率。</p><p>\r\n\r\n2017年初，XX全面向技术转型，迄今XX体系已经投入了近600亿元用于技术研发。\r\n</p><p>\r\nXX集团定位于“以供应链为基础的技术与服务企业”，目前业务已涉及零售、科技、物流、健康、保险、产发和海外等领域。\r\n</p><p>\r\nXX集团奉行客户为先、诚信、协作、感恩、拼搏、担当的价值观，以“技术为本，致力于更高效和可持续的世界”为使命，目标是成为全球最值得信赖的企业。</p>', 1618143384, 1618144249);
 
 -- --------------------------------------------------------
 
@@ -218,6 +250,12 @@ ALTER TABLE `zpl_options`
   ADD KEY `autoload` (`autoload`);
 
 --
+-- 表的索引 `zpl_page`
+--
+ALTER TABLE `zpl_page`
+  ADD PRIMARY KEY (`page_id`);
+
+--
 -- 表的索引 `zpl_text`
 --
 ALTER TABLE `zpl_text`
@@ -244,19 +282,25 @@ ALTER TABLE `zpl_admin`
 -- 使用表AUTO_INCREMENT `zpl_file`
 --
 ALTER TABLE `zpl_file`
-  MODIFY `file_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `file_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- 使用表AUTO_INCREMENT `zpl_file_folder`
 --
 ALTER TABLE `zpl_file_folder`
-  MODIFY `folder_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `folder_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- 使用表AUTO_INCREMENT `zpl_options`
 --
 ALTER TABLE `zpl_options`
   MODIFY `option_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- 使用表AUTO_INCREMENT `zpl_page`
+--
+ALTER TABLE `zpl_page`
+  MODIFY `page_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- 使用表AUTO_INCREMENT `zpl_text`

@@ -4,62 +4,21 @@
 <head>
     <meta charset="utf-8" />
     <title>管理后台</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <style>
-        * {
-            padding: 0;
-            margin: 0;
-        }
-
         body {
             background-color: #efefef;
         }
 
-        .nav {
-            height: 60px;
-            background-color: #1e86d0;
-            color: #fff;
-            display: flex;
-            line-height: 60px;
-            justify-content: space-between;
+        .container-fluid{
+            margin-top: 20px;
         }
+        
 
-        .nav .l-nav {
-            display: flex;
-        }
-
-        .nav .logo {
-            margin: 0 20px;
-        }
-
-        .nav li,
-        .nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .nav .l-nav li,
-        .nav .r-nav li {
-            float: left;
-            margin-right: 20px;
-        }
-
-        .nav .r-nav {
-            float: right;
-            margin-right: 20px;
-        }
-
-        .nav a {
-            color: #ffffff;
-            text-decoration: none;
-        }
-
-        .container {
-            display: flex;
-            padding: 30px 40px;
-            flex-direction: column;
-        }
 
         .survey-info {
             display: flex;
@@ -286,22 +245,37 @@
 </head>
 
 <body>
-    <div class="nav">
-        <div class="l-nav">
-            <div class="logo">
-                <h1>管理后台</h1>
-            </div>
-            <ul>
-                <li><a href="?do=base">数据总览</a></li>
-                <li><a href="?do=user">用户管理</a></li>
-                <li><a href="?do=file">资源管理</a></li>
-                <li><a href="?do=system">系统设置</a></li>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="/"><h2>管理后台</h2></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="?do=base">数据总览</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="?do=user">用户管理</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="?do=file">资源管理</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="?do=page">单页管理</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="?do=system">系统设置</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><?php echo $_SESSION['admin']['username']; ?> </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="?do=logout">注销</a>
+                </li>
             </ul>
         </div>
-        <div class="r-nav">
-            <ul>
-                <li><a href="?do=333"><?php echo $_SESSION['admin']['username']; ?></a></li>
-                <li><a href="?do=logout">注销</a></li>
-            </ul>
-        </div>
-    </div>
+    </nav>

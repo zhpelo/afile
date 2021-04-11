@@ -5,7 +5,7 @@
     // p($data);
 get_admin_header(); 
 ?>
-<div class="container">
+<div class="container-fluid">
     <div class="block">
         <div class="block-header">
             <h3>用户管理</h3>

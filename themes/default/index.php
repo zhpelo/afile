@@ -10,9 +10,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="?a=text">文字文本</a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link" href="?a=encryption">超级加密</a>
-            </li>
+            </li> -->
             <li class="nav-item">
                 <a class="nav-link" href="?a=receive">文件接收</a>
             </li>

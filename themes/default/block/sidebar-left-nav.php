@@ -17,13 +17,13 @@
             <a href="?a=file&c=index">文件管理</a>
         </li>
 
-        <li>
+        <!-- <li>
             <a href="?a=file&c=share">分享管理</a>
         </li>
 
         <li>
             <a href="?a=file&c=trash">回收站</a>
-        </li>
+        </li> -->
 
     </ul>
 

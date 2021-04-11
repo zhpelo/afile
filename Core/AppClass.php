@@ -3,7 +3,7 @@ class App
 {
 	protected $page = 1, $db, $config = array(), $action = "", $do = "", $id = "", $http = "http", $sandbox = false;
 
-	protected $actions = ["user", "encryption", "text", "login","user","file", "download", "register", "receive", "upload"];
+	protected $actions = ["user", "encryption", "text", "login","page","file", "download", "register", "receive", "upload"];
 
 	public function __construct($db, $config)
 	{
@@ -105,6 +105,15 @@ class App
 		include(TEMPLATE . "/index.php");
 	}
 
+	protected function page()
+	{
+		$template_data = $this->db->where("page_url", (STRING)$_GET['page_url'])
+										->orderBy("create_time","Desc")
+										->getOne("page");
+		// p($template_data);
+		include(TEMPLATE . "/page.php");
+	}
+
 	public function user()
 	{
 		//不登录不允许访问
@@ -176,11 +185,11 @@ class App
 					
 					//开始写入数据库
 					$data = [
-						"parent_id" 	=> (int)$_POST['parent_id'] ?: 0,
+						"parent_id" 	=>  (isset($_GET['parent_id']) && $_GET['parent_id']) ? (int)$_GET['parent_id'] : 0,
 						"user_id"		=> (int)$_SESSION['user']['user_id'],
 						"folder_name"	=> (string)$_POST['folder_name'] ,
 						"access_password" => (strlen($_POST['access_password']) >= 4) ? (string)$_POST['access_password'] : null,
-						"is_public" 	=> (int)$_POST['is_public'] ?: 1,
+						"is_public" 	=> (int)$_POST['is_public'] ?: 0,
 						"total_size" 	=> 0,
 						"status"		=> "active",
 						"create_time" 	=> time(),
@@ -193,23 +202,59 @@ class App
 					if ($ret) {
 						$this->error('此文件夹已存在');
 					}
+					if($data['is_public']){
+						$data['alias'] = $this->alias('file_folder');
+					}
+
 					$folder_id =  $this->db->insert('file_folder', $data);
 					if ($folder_id > 0) {
 						$this->success('成功', '?a=file&c=index');
 					} else {
-						echo "Last executed query was ". $this->db->getLastQuery();
+						// echo "Last executed query was ". $this->db->getLastQuery();
 						$this->error('新建文件夹失败，请重试');
 						
 					}
 				}
 			}
+			if($_GET['c'] == 'delete'){
+				if( isset($_GET['file_id']) && $_GET['file_id'] > 0){
+					$key = 'file_id';
+					$id = (int)$_GET['file_id'];
+					$table_name = 'file';
+				}else if(isset($_GET['folder_id']) && $_GET['folder_id'] > 0){
+					$key = 'folder_id';
+					$id = (int)$_GET['folder_id'];
+					$table_name = 'file_folder';
+				}else{
+					$this->error('参数错误');
+				}
+				$ret = $this->db->where("user_id", $_SESSION['user']['user_id'])
+									->where($key, $id)
+									->getOne($table_name);
+				if(!$ret){
+					$this->error('id参数错误');
+				}
+				$this->db->where("user_id", $_SESSION['user']['user_id'])->where($key, $id);
+				if($this->db->delete($table_name)){
+					// if(1){
+					
+					//开始删除文件
+					if($table_name == 'file'){
+						if( !$this->db->where('md5', $ret['md5'])->getOne($table_name) ){
+							zpl_unlink($ret['url']);
+						}
+					}
+					
+					
 
-			if($_GET['c'] == 'trash'){
-				
+					$this->success('删除成功');
+				}else{
+					$this->error('删除失败，请稍后重试');
+				}
 			}
 
 		}else{
-			$parent_id = (isset($_GET['parent_id']) && $_GET['parent_id'] > 0) ?: 0;
+			$parent_id = (isset($_GET['parent_id']) && $_GET['parent_id'] > 0) ? (int)$_GET['parent_id'] : 0;
 			$template_data['folder'] = $this->db->where("user_id", $_SESSION['user']['user_id'])
 										->where("parent_id", $parent_id)
 										->orderBy("create_time","Desc")
@@ -308,10 +353,11 @@ class App
 	public function upload()
 	{
 		if (is_post()) {
-			$is_lan = isset($_POST['isLAN']) && $_POST['isLAN'] ?: 0;
-			$is_only = isset($_POST['time']) && $_POST['time'] == 1 ?: 0;
+			$is_lan = isset($_POST['isLAN']) && $_POST['isLAN'] ? 1 : 0;
+			$is_only = isset($_POST['time']) && $_POST['time'] == 1 ? 1 : 0;
+			$parent_id = isset($_GET['parent_id']) && $_GET['parent_id'] ? (int)$_GET['parent_id'] : 0;
 			$expire_time = NULL;
-			if (!$is_only) {
+			if (!$is_only && isset($_POST['time'])) {
 				if ($_POST['time'] == '1d') {
 					$expire_time = strtotime("+1 day");
 				}
@@ -344,18 +390,22 @@ class App
 			}else{
 				$md5 = md5_file($_FILES['file']['tmp_name']);
 				$extension = pathinfo($_FILES['file']['name'])['extension'];
-				$save_filename = $md5 . '.' . $extension;
-				$save_filepath = 'upload/' . date('Y/m/d/', time());
+				// $save_filename = $md5 . '.' . $extension;
+				// $save_filepath = 'upload/' . date('Y/m/d/', time());
+				$save_filename = $md5;
+				$save_filepath = 'upload/'.substr($md5,0,2).'/';
+				
 				//开始创建文件目录
-				sss_mkdir($save_filepath);
+				zpl_mkdir($save_filepath);
 				//移动临时文件到 指定目录
 				$ret = move_uploaded_file($_FILES["file"]["tmp_name"], $save_filepath . $save_filename);
 				if (!$ret) $this->error('文件上传失败');
 				//开始写入数据库
 				$data = [
-					"user_id" 		=> 0,
+					"user_id"   => 0,
+					"parent_id" => $parent_id,
 					"name" 		=> $_FILES["file"]["name"],
-					"md5"	=> $md5,
+					"md5"		=> $md5,
 					"alias"		=> $this->alias(),
 					"suffix"	=> $extension,
 					"size"	=> $_FILES["file"]["size"],
@@ -371,6 +421,9 @@ class App
 				}
 				$file_id =  $this->db->insert('file', $data);
 				if ($file_id > 0) {
+					if(isset($_GET['c']) && $_GET['c'] == 'folder'){
+						exit('ok');
+					}
 					include(TEMPLATE . "/upload_success.php");
 				} else {
 					$this->error('文件上传失败，请重试');
@@ -394,11 +447,6 @@ class App
 			if($data['expire_time'] != NULL && $data['expire_time'] <= time()) {
 				$this->error('文件失效');
 			}
-
-
-			
-
-			
 			
 			if( isset($_GET['c']) && $_GET['c'] == 'download'){
 				$file_dir = ROOT.'/'.$data['url'];
@@ -427,7 +475,7 @@ class App
 		include(TEMPLATE . "/download.php");
 	}
 
-	protected function alias(){
+	protected function alias($table_name = 'file'){
 		$unique = FALSE;
 		$max_loop = 100;
 		$i=0;
@@ -440,7 +488,7 @@ class App
 				$i=0;
 			}
 			$alias = strrand($alias_length);
-			if( !$this->db->where("alias", $alias)->getOne("file") ) $unique=TRUE;
+			if( !$this->db->where("alias", $alias)->getOne($table_name) ) $unique=TRUE;
 			$i++;
 		}		
 		return $alias;

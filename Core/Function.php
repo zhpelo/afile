@@ -75,11 +75,20 @@ function redirect($url)
     Header("Location:$url");
 }
 
-function sss_mkdir($path)
+function zpl_mkdir($path)
 {
     //判断目录存在否，不存在则创建目录
     if (!is_dir($path)) {
         if (!mkdir($path, 0755, true)) return false;
+    }
+    return true;
+}
+
+function zpl_unlink($path)
+{
+    //判断目录存在否，不存在则创建目录
+    if (file_exists($path)) {
+        if (!unlink($path)) return false;
     }
     return true;
 }
@@ -222,8 +231,11 @@ function url($path,$data)
         case "text_share":
             $url =  "/t/".$data;
             break;
-        case "green":
-            echo "你喜欢的颜色是绿色!";
+        case "folder_share":
+            $url =  "/folder_".$data;
+            break;
+        case "page":
+            $url =  "?a=page&page_url=".$data;
             break;
         default:
             $url = '/404.html';

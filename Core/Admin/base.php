@@ -1,5 +1,5 @@
 <?php get_admin_header(); ?>
-<div class="container">
+<div class="container-fluid">
 	<div class="survey-info">
 		<div class="item">
 			<h2>今日注册用户</h2>
