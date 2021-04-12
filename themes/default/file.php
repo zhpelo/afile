@@ -59,6 +59,10 @@
     .dropzone .dz-preview .dz-details .dz-size {
         margin-bottom: 0.5em;
     }
+    .file-path{
+        font-size: 18px;
+        line-height: 30px;
+    }
 </style>
 <!-- 页面主要内容 start -->
 <div class="container-fluid">
@@ -70,18 +74,28 @@
         </div>
         <div class="col-md-9 col-xl-8 py-md-3 pl-md-5">
             <div class="card">
-                <div class="card-header"> 文件管理 </div>
-                <div class="card-body">
-                    <div class="btn-group" role="group" aria-label="Basic example">
+                <div class="card-header d-flex justify-content-between">  
+               
+                <div class="file-path">
+                    
+                    <a href="?a=file&c=index">文件管理</a>/ 
+                    <?php if(isset($_GET['parent_id'])) $file_path = get_file_path($_GET['parent_id']); ?> 
+                </div>
+                
+                <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
                         <a href="?a=file&c=add_folder<?php if(isset($_GET['parent_id'])) echo '&parent_id='.$_GET['parent_id']; ?>"
-                            class="btn btn-secondary">新建文件夹</a>
+                            class="btn btn-secondary"> <i class="bi bi-folder-plus"></i>
+新建文件夹 </a>
 
-                        <a href="?a=file&c=add_folder" class="btn btn-secondary">离线下载</a>
+                        <a href="?a=file&c=add_folder" class="btn btn-secondary"> <i class="bi bi-cloud-download"></i> 离线下载 </a>
                         <a href="?a=file&c=upload<?php if(isset($_GET['parent_id'])) echo '&parent_id='.$_GET['parent_id']; ?>"
-                            class="btn btn-secondary">上传文件到此目录</a>
+                            class="btn btn-secondary" title="上传文件到此目录"> <i class="bi bi-cloud-upload"></i> 上传 </a>
                     </div>
-                    <br />
-                    <br />
+                
+                </div>
+                <div class="card-body">
+                   
+                  
 
                     <?php if ($_GET['c'] == 'add_folder') { ?>
                     <form method="POST">
@@ -142,7 +156,7 @@
                             addRemoveLinks: true,
                             autoProcessQueue: false,
                             dictRemoveFile: "删除",
-                            dictFileTooBig: "文件超过100M,不允许上传",
+                            dictFileTooBig: "文件超过500M,不允许上传",
                             init: function () {
                                 var submitButton = document.querySelector("#start-uploading")
                                 myDropzone = this; // closure

@@ -44,6 +44,38 @@
             </form>
 
         </div>
+
+        <?php  if(isset($intranet) && $intranet){ ?>
+            <div class="mt-3">
+                <div class="card">
+                    <div class="card-header">
+                        内网共享文本
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <?php  foreach ($intranet as &$item){  ?>
+                            <li class="list-group-item">
+                                <a href="<?php echo url('text_share',$item['alias']);?>">
+                                    创建于<?php echo zpl_time($item['create_time']); ?>
+                                    
+                                    -- 
+                                    <?php 
+                                        if($item['is_only']){
+                                           echo '阅后即焚';
+                                        }else if($item['expire_time']){
+                                            echo date("Y-m-d H:i",$item['expire_time']).'后过期';
+                                        }else{
+                                            echo '永久有效';
+                                        }
+                                    ?>
+                                </a> 
+                            </li>
+                        <?php }  ?>
+                    </ul>
+                </div>
+            </div>
+        <?php  }  ?>
+
+
     </div>
 </div>
 <!-- 页面主要内容 end -->

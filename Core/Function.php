@@ -242,3 +242,13 @@ function url($path,$data)
     }
     return $web_config['siteurl'].$url;
 }
+
+function get_file_path($id)      
+{
+    global $db;
+    $folder = $db->where('folder_id',$id)->getOne('file_folder');
+    if($folder['parent_id'] > 0){
+        get_file_path($folder['parent_id']); 
+    }
+    echo '<a href="?a=file&c=index&parent_id='.$folder['folder_id'].'">'.$folder['folder_name'].'</a>/';
+}

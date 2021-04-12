@@ -10,7 +10,7 @@
     $("#time").change(function() {
         var time = $(this).val();
         $.cookie('time', time);
-        <?php if (!isset($_SESSION['is_login']) && !$_SESSION['is_login']) { ?>
+        <?php if (isset($_SESSION['is_login']) && !$_SESSION['is_login']) { ?>
             if (time == 'forever') {
                 alert('需要登陆后才可以能选择');
                 $(this).val("7d");

@@ -271,6 +271,14 @@ class App
 
 	protected function text()   
 	{
+		$ip = get_real_ip();
+		if($ip){
+			$intranet = $this->db->where("upload_ip", $ip)
+								 ->where("is_lan", 1)
+								 ->where("create_time", strtotime("-1 hours"),">")
+								 ->orderBy("create_time","Desc")
+								 ->get("text");
+		}
 		include(TEMPLATE . "/text.php");
 	}
 
@@ -439,6 +447,11 @@ class App
 
 			if( isset($_GET['c']) && $_GET['c'] == 'text'){
 				$data = $this->db->where("alias", $alias)->getOne("text");
+				//给阅后即焚文本进行设置到期时间
+				if($data['is_only'] == 1){
+					// exit('设置到期时间');
+					$this->db->where("alias", $alias)->update("text",['expire_time' => time()]);
+				}
 			}else{
 				$data = $this->db->where("alias", $alias)->getOne("file");
 			}
