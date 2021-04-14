@@ -87,7 +87,7 @@
                             class="btn btn-secondary"> <i class="bi bi-folder-plus"></i>
 新建文件夹 </a>
 
-                        <a href="?a=file&c=add_folder" class="btn btn-secondary"> <i class="bi bi-cloud-download"></i> 离线下载 </a>
+                        <!-- <a href="?a=file&c=add_folder" class="btn btn-secondary"> <i class="bi bi-cloud-download"></i> 离线下载 </a> -->
                         <a href="?a=file&c=upload<?php if(isset($_GET['parent_id'])) echo '&parent_id='.$_GET['parent_id']; ?>"
                             class="btn btn-secondary" title="上传文件到此目录"> <i class="bi bi-cloud-upload"></i> 上传 </a>
                     </div>

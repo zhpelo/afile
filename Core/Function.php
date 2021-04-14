@@ -125,8 +125,8 @@ function get_real_ip()
 * @param length, start
 * @return 
 */    
-function strrand($length=6){    
-    $use = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"; 
+function strrand($use="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",$length=6){    
+    // $use = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"; 
     srand((double)microtime()*1000000);
     $str = ''; 
     for($i=0; $i<$length; $i++) { 
@@ -242,11 +242,15 @@ function url($path,$data)
     }
     return $web_config['siteurl'].$url;
 }
+function db()
+{
+    $db = new SSS();
+    return $db->get_db(); 
+}
 
 function get_file_path($id)      
 {
-    global $db;
-    $folder = $db->where('folder_id',$id)->getOne('file_folder');
+    $folder = db()->where('folder_id',$id)->getOne('file_folder');
     if($folder['parent_id'] > 0){
         get_file_path($folder['parent_id']); 
     }

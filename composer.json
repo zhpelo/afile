@@ -1,0 +1,6 @@
+{
+    "require": {
+        "phpmailer/phpmailer": "^6.4",
+        "thingengineer/mysqli-database-class": "dev-master"
+    }
+}

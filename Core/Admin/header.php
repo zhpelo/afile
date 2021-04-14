@@ -271,6 +271,9 @@
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
+                    <a class="nav-link" href="/" target="_blank">访问前台</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="#"><?php echo $_SESSION['admin']['username']; ?> </a>
                 </li>
                 <li class="nav-item">
