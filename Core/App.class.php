@@ -47,9 +47,6 @@ class App extends SSS
 
 	protected function home()
 	{
-		// $a = new MALL();
-		// p($a->send_code('admin@eenot.com','register'));
-		// exit();
 		$ip = get_real_ip();
 		if ($ip) {
 			$intranet = $this->db->where("upload_ip", $ip)
@@ -241,6 +238,17 @@ class App extends SSS
 
 	protected function receive()
 	{
+		if (is_post()) {
+			if (!isset($_POST['code'])) {
+				$this->error('参数不完整');
+			}
+			$data = $this->db->where("alias", $_POST['code'])->getOne("file");
+			if (!$data) $this->error('找不到此文件');
+			if ($data['expire_time'] != NULL && $data['expire_time'] <= time()) {
+				$this->error('文件失效');
+			}
+			redirect(url('file_share',$_POST['code']));
+		}
 		include(TEMPLATE . "/receive.php");
 	}
 	protected function login()

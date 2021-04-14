@@ -20,6 +20,9 @@ class SSS {
     public function get_db(){
         return $this->db;
     }
+    public function get_config(){
+        return $this->config;
+    }
     public function run()
 	{
 		$APP =  new App();

@@ -240,12 +240,18 @@ function url($path,$data)
         default:
             $url = '/404.html';
     }
-    return $web_config['siteurl'].$url;
+    return get_config('siteurl').$url;
 }
+function get_config($key)
+{
+    global $SSS;
+    return $SSS->get_config()[$key]; 
+}
+
 function db()
 {
-    $db = new SSS();
-    return $db->get_db(); 
+    global $SSS;
+    return $SSS->get_db(); 
 }
 
 function get_file_path($id)      
