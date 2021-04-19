@@ -1,9 +1,9 @@
-<?php 
+<?php
 //开始业务处理代码
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$data = $this->db->orderBy("create_time", "Desc")->arraybuilder()->paginate("user", $page);
 
-    $data = $this->db->orderBy("create_time","Desc")->get("user");
-    // p($data);
-get_admin_header(); 
+get_admin_header();
 ?>
 <div class="container-fluid">
     <div class="block">
@@ -11,7 +11,8 @@ get_admin_header();
             <h3>用户管理</h3>
         </div>
         <div class="block-body">
-            <table class="table data-list">
+
+            <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th>用户ID</th>
@@ -25,24 +26,31 @@ get_admin_header();
                     </tr>
                 </thead>
                 <tbody>
-                    <?php  foreach ($data as &$item){  ?>
-                    <tr>
-                        <th scope="row"> <?php echo $item['user_id'];?> </th>
-                        <td> <?php echo $item['username'];?> </td>
-                        <td> <?php echo $item['email'];?> </td>
-                        <td> <?php echo $item['mobile'];?> </td>
-                        <td> <?php echo zpl_time($item['login_time']);?> </td>
-                        <td> <?php echo $item['login_ip'];?> </td>
-                        <td> <?php echo zpl_time($item['create_time']);?> </td>
-                        <td> 
-                            <a href="#">封禁</a>
-                            <a href="#">删除</a>
-                            <a href="#">编辑</a>
-                        </td>
-                    </tr>
+                    <?php foreach ($data as &$item) {  ?>
+                        <tr>
+                            <th scope="row"> <?php echo $item['user_id']; ?> </th>
+                            <td> <?php echo $item['username']; ?> </td>
+                            <td> <?php echo $item['email']; ?> </td>
+                            <td> <?php echo $item['mobile']; ?> </td>
+                            <td> <?php echo $item['login_time'] ? zpl_time($item['login_time']) : '无'; ?> </td>
+                            <td> <?php echo $item['login_ip'] ?: '无'; ?> </td>
+                            <td> <?php echo zpl_time($item['create_time']); ?> </td>
+                            <td>
+                                <a href="#">封禁</a>
+                                <a href="#">删除</a>
+                                <a href="#">编辑</a>
+                            </td>
+                        </tr>
                     <?php }  ?>
                 </tbody>
             </table>
+
+
+            <?php 
+                if ($this->db->totalPages > 1) { 
+                    get_template_page($page,$this->db->totalPages);
+                }
+            ?>
 
         </div>
     </div>

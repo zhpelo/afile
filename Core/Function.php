@@ -262,3 +262,60 @@ function get_file_path($id)
     }
     echo '<a href="?a=file&c=index&parent_id='.$folder['folder_id'].'">'.$folder['folder_name'].'</a>/';
 }
+
+function get_template_page($present,$total)
+{
+    if($present > 1){
+        $prev_url =  get_page_url(['page' => $present-1]);
+    }
+
+    if($present < $total){
+        $next_url =  get_page_url(['page' => $present+1]);
+    }
+    
+
+    $html =     '<nav aria-label="Page navigation example">';
+    $html .=    '   <ul class="pagination">';
+    if(isset($prev_url)){
+        $html .='       <li class="page-item">';
+        $html .='           <a class="page-link" href="'.$prev_url.'" aria-label="Previous"><span aria-hidden="true">&laquo;</span> </a>';
+        $html .='       </li>';
+    }
+
+    for ($x=1; $x<= (int)$total; $x++) {
+        $class = $present == $x ? 'active' :'';
+        $html .='       <li class="page-item '. $class .'"><a class="page-link" href="'.get_page_url(['page' => $x]).'">'.$x.'</a></li>';
+    }
+    if(isset($next_url)){
+        $html .='       <li class="page-item">';
+        $html .='           <a class="page-link" href="'.$next_url.'" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>';
+        $html .='       </li>';
+    }
+    
+    $html .=    '   </ul>';
+    $html .=    '</nav>';
+
+    echo $html;
+}
+
+
+
+function get_page_url($addarr = null) {
+    $pageURL = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+
+    $query_arr = [];
+    if($_SERVER["QUERY_STRING"]){
+        parse_str($_SERVER["QUERY_STRING"], $query_arr);
+    }
+    if($addarr){
+        $query_arr = array_merge($query_arr, $addarr);
+    }    
+    $query_str = $_SERVER['PHP_SELF'].'?'.http_build_query($query_arr);
+    
+    if ($_SERVER["SERVER_PORT"] != "80") {
+        $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$query_str;
+    } else {
+        $pageURL .= $_SERVER["SERVER_NAME"].$query_str;
+    }
+    return $pageURL;
+}

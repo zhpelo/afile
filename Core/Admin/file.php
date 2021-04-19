@@ -1,8 +1,8 @@
 <?php 
 //开始业务处理代码
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$data = $this->db->orderBy("create_time", "Desc")->arraybuilder()->paginate("file", $page);
 
-    $data = $this->db->orderBy("create_time","Desc")->get("file");
-    // p($data);
 get_admin_header(); 
 ?>
 <div class="container-fluid">
@@ -11,7 +11,7 @@ get_admin_header();
             <h3>文件管理</h3>
         </div>
         <div class="block-body">
-            <table class="table data-list">
+            <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th>文件ID</th>
@@ -41,7 +41,11 @@ get_admin_header();
                     <?php }  ?>
                 </tbody>
             </table>
-
+            <?php 
+                if ($this->db->totalPages > 1) { 
+                    get_template_page($page,$this->db->totalPages);
+                }
+            ?>
         </div>
     </div>
 

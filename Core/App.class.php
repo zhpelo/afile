@@ -278,6 +278,9 @@ class App extends SSS
 	{
 		$user = $this->db->where("user_id", $user_id)->getOne("user");
 		if ($user) {
+			//写入数据库
+			$this->db->where("user_id", $user_id)->update("user", ['login_time' => time(), 'login_ip' => get_real_ip()]);
+
 			$_SESSION['is_login'] = TRUE;
 			$_SESSION['user'] = [
 				'user_id' => $user['user_id'],

@@ -31,7 +31,8 @@ if (is_post()) {
 if(isset($_GET['page_id']) && $_GET['page_id']){
     $data = $this->db->where('page_id',(int)$_GET['page_id'])->getOne("page");
 }else{
-    $data = $this->db->orderBy("create_time", "Desc")->get("page");
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $data = $this->db->orderBy("create_time", "Desc")->arraybuilder()->paginate("page", $page);
 }
 
 
@@ -75,7 +76,7 @@ get_admin_header();
                     <button type="submit" class="btn btn-primary">提交</button>
                 </form>
             <?php } else { ?>
-                <table class="table data-list">
+                <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -102,6 +103,12 @@ get_admin_header();
                         <?php }  ?>
                     </tbody>
                 </table>
+
+                <?php 
+                    if ($this->db->totalPages > 1) { 
+                        get_template_page($page,$this->db->totalPages);
+                    }
+                ?>
             <?php }  ?>
 
         </div>
