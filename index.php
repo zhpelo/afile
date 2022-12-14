@@ -9,7 +9,111 @@ function get_root_dirs()
         return !is_exclude($dir, true, is_link($dir));
     });
 }
+function get_file_list($path)
+{
+    $path = ROOT . '/' . $path;
 
+    $arr = [
+        'dir' => [],
+        'file' => [],
+        'link' => [],
+    ];
+    if (is_dir($path)) {
+        if ($dh = opendir($path)) {
+            while (($file = readdir($dh)) !== false) {
+                if (in_array(substr($file, 0, 1), ['.', '#'])) continue;
+                $file_path = $path . '/' . $file;
+                if (is_dir($file_path)) {
+                    $arr['dir'][] = $file;
+                } elseif (is_file($file_path)) {
+                    $arr['file'][] = $file;
+                } elseif (is_link($file_path)) {
+                    $arr['link'][] = $file;
+                }
+            }
+            closedir($dh);
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return $arr;
+}
+
+function array_page($array, $page = 1, $per_page = 12)
+{
+    $start = ($page - 1) * $per_page;
+
+    return array_slice($array, $start, $per_page);
+}
+
+function get_page_html($total, $page = 1, $per_page = 12)
+{
+    global $current_dirs;
+
+    $total_pages = ceil($total / $per_page);
+
+
+
+    if ($total_pages < 2) {
+        return false;
+    }
+    $html = '<nav class="pager"><ul class="pagination">';
+    if ($page > 4) {
+        $html .= "<li><a href=\"?dir={$current_dirs}&page=1\">首页</a></li>";
+    }
+    if ($page > 4) {
+        $start_key = (int)$page - 4;
+        $end_key = (int)$page + 4;
+    } else {
+        $start_key = 1;
+        $end_key = 9;
+    }
+
+    if ($page + 4 > $total_pages) {
+        $end_key = $total_pages;
+        $start_key = $end_key - 9;
+    }
+    if ($start_key < 1) {
+        $start_key = 1;
+    }
+    if ($end_key > $total_pages) {
+        $end_key = $total_pages;
+    }
+    for ($i = $start_key; $i <= $end_key; $i++) {
+        if ((int)$page == $i) {
+            $html .= "<li class=\"active\"><span>$i</span></li>";
+        } else {
+            $html .= "<li><a href=\"?dir={$current_dirs}&page={$i}\">$i</a></li>";
+        }
+    }
+
+    if ($total_pages > $page + 4) {
+        $html .= "<li class=\"disabled\"><span>...</span></li>";
+    }
+    if ($total_pages > 9) {
+        $html .= "<li><a href=\"?dir={$current_dirs}&page={$total_pages}\">尾页</a></li>";
+    }
+    $html .= '</ul></nav>';
+    return $html;
+}
+
+function input($key = null, $method = 'get', $default = null, $verify = null)
+{
+    if ($method == 'get') {
+        $val = isset($_GET[$key]) ? $_GET[$key] : $default;
+    } else if ($method == 'post') {
+        $val = isset($_POST[$key]) ? $_POST[$key] : $default;
+    }
+    if ($verify) {
+        if (!call_user_func($verify, $val)) {
+            return false;
+        }
+    }
+    return $val;
+}
 // is exclude
 function is_exclude($path = false, $is_dir = true, $symlinked = false)
 {
@@ -75,8 +179,65 @@ function real_path($path)
     return $real_path ? str_replace('\\', '/', $real_path) : false;
 }
 
+function generate_thumb($filename, $thumbname) {
+    if (!file_exists('_files/thumbs')) {
+        mkdir('_files/thumbs');
+    }
+    if (extension_loaded('imagick')) {
+        $image = new Imagick($filename);
+        $image->thumbnailImage(THUMB_W, THUMB_H, true, true);
+        $image->writeImage($thumbname);
+        $image->destroy();
+    } else {
+        $image = imagecreatefromstring(file_get_contents($filename));
+        $img_w = imagesx($image);
+        $img_h = imagesy($image);
+        $thumb_w = THUMB_W;
+        $thumb_h = THUMB_H;
+        if ($img_w > $img_h) {
+            $thumb_w = THUMB_W;
+            $thumb_h = intval($img_h / $img_w * THUMB_W);
+        } else if ($img_w < $img_h) {
+            $thumb_w = intval($img_w / $img_h * THUMB_H);
+            $thumb_h = THUMB_H;
+        }
+        // var_dump($img_w, $img_h);
+        // var_dump($thumb_w, $thumb_h);
+        // exit();
+        $thumb = imagecreatetruecolor($thumb_w, $thumb_h);
+        imagecopyresampled($thumb, $image, 0, 0, 0, 0, $thumb_w, $thumb_h, $img_w, $img_h);
+        imagejpeg($thumb, $thumbname);
+        imagedestroy($thumb);
+        imagedestroy($image);
+    }
+}
+function get_thumb($file){
+    $file_path = ROOT . '/' .$file;
+    $thumb_path = '_files/thumbs/'.md5_file($file_path).'.jpg';
+
+    if(!is_file($thumb_path)){
+        generate_thumb($file_path,$thumb_path);
+    }
+
+    return $thumb_path;
+
+}
+
+function get_file_ext($file){
+    return strrchr(strtolower($file), '.');
+}
+
+/**
+ * +------------------------
+ * |     这是入口开始执行
+ * +------------------------
+ */
+
 // 获取当前文件的上级目录
 define("ROOT", dirname(__FILE__));
+define('THUMB_W', 300);
+define('THUMB_H', 1800); // Set thumbnail size in pixels
+
 $exclude = [
     '.',
     '..',
@@ -98,24 +259,20 @@ $CONFIG = [
     'dirs_exclude' => '',
     'allow_symlinks' => true,
 ];
-// $filename = scandir(ROOT);
 
+//顶级目录列表
 $root_dirs = get_root_dirs();
 
-if(isset($_GET['dir']) && $_GET['dir']){
-
-    $current_dirs = str_replace(['.','../'],"",$_GET['dir']);
-
-    $file_list= scandir(ROOT.'/'.$current_dirs);
-
-}else{
+if (input('dir')) {
+    $current_dirs = str_replace(['.', '../'], "", input('dir'));
+} else {
     $current_dirs = "";
 }
 
+$file_list =  get_file_list($current_dirs);
+$page =  input('page', 'get', 1);
 
 ?>
-
-
 
 <!doctype html>
 <html lang="zh-CN">
@@ -152,7 +309,7 @@ if(isset($_GET['dir']) && $_GET['dir']){
                     <a class="link-light" target="_blank" href="https://www.7sbook.com/donation">捐赠支持</a>
                 </div>
                 <div class="col-auto text-center">
-                    <a class="zpl-header-logo text-white" href="/" title="传硕公版书-传递文明的硕果">传硕公版书</a>
+                    <a class="zpl-header-logo text-white" href="https://www.7sbook.com/" title="传硕公版书-传递文明的硕果">传硕公版书</a>
                 </div>
                 <div class="col d-flex justify-content-end align-items-center">
                     <a class="btn btn-outline-light btn-sm" href="https://www.7sbook.com/search"><i class="bi bi-search"></i>&nbsp;搜索</a>
@@ -163,12 +320,13 @@ if(isset($_GET['dir']) && $_GET['dir']){
     <div class="nav-scroller bg-burlywood">
         <div class="container">
             <nav class="nav top-nav d-flex justify-content-between">
-                <a class="active" href="/">首页</a>
-                <a class="" href="/ebook/index.html">书籍</a>
+                <a href="https://www.7sbook.com/">首页</a>
+                <a href="https://www.7sbook.com/ebook/index.html">书籍</a>
                 <a href="https://www.7sbook.com/category/文章/">文章</a>
-                <a class="" href="/poetry/index.html">诗词</a>
-                <a class="" href="/author/index.html">作者</a>
+                <a href="https://www.7sbook.com/poetry/index.html">诗词</a>
+                <a href="https://www.7sbook.com/author/index.html">作者</a>
                 <a href="https://www.7sbook.com/category/名画/">名画</a>
+                <a class="active" href="https://www.7sbook.com/">文件</a>
             </nav>
         </div>
     </div>
@@ -182,83 +340,99 @@ if(isset($_GET['dir']) && $_GET['dir']){
     </div>
 
     <style>
-        .root_dir{
+        .root_dir {
             font-size: 1.2rem;
             line-height: 3rem;
         }
     </style>
     <main class="container-fluid container-lg">
-    
+
         <div class="row">
-            <div class="col-3">
+            <div class="col-md-3">
                 <div class="my-3 p-3 bg-burlywood rounded shadow-sm">
                     <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                         <h3 class="h6">文件列表</h3>
-                        <a href="/blogs/12.html">上传文件</a>
+                        <a href="mailto:7sbook@duck.com">我要分享</a>
                     </div>
-                    
-                    <?php foreach ($root_dirs as $dir) {?>
 
+                    <?php foreach ($root_dirs as $dir) { ?>
                         <div class="root_dir">
-                            <a href="?dir=<?=get_url_path($dir);?>">
+                            <a href="?dir=<?= get_url_path($dir); ?>">
                                 <i class="bi bi-folder"></i>
-                                <span><?=get_url_path($dir);?></span>
+                                <span><?= get_url_path($dir); ?></span>
                             </a>
                         </div>
                     <?php } ?>
-
                 </div>
-
-                
             </div>
-            <div class="col-9">
+            <div class="col-md-9">
                 <div class="my-3 p-3 bg-burlywood rounded shadow-sm">
                     <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                         <h3 class="h6">文件列表</h3>
-                    
+
                     </div>
 
                     <style>
-                        .grid-item { 
+                        .grid-item {
                             width: 32.5%;
                             margin-bottom: 10px;
-                         }
+                        }
 
-                        .grid-item .folder{
-                            height: 100px;
+                        .grid-item .folder {
+                            text-align: center;
                             background-color: #fff;
                             border-radius: 6px;
-                            padding: 20px;
+                            padding: 30px 0;
+
+                        }
+
+                        .grid-item .folder .bi {
+                            font-size: 5rem;
+                            line-height: 5rem;
+                            color: #ff9800;
+                        }
+
+                        .grid-item .folder p {
+                            margin-bottom: 0;
                         }
                     </style>
 
                     <div class="grid">
-                        <?php foreach ($file_list as $i=>$file) {  $ext = strrchr(strtolower($file), '.'); ?>
-                        <div class="grid-item">
-                            
-                                <?php if(in_array($ext,['.jpg','.png','.jpeg'])){ ?>
-                                    <a href="/<?=$current_dirs;?>/<?=$file;?>">
-                                        <img src="<?=$current_dirs;?>/<?=$file;?>" style="width: 100%;"/>
-                                    </a>
-                                <?php }else{ ?>
-                                    <a href="?dir=<?=$current_dirs;?>/<?=$file;?>">
+
+                        <?php if ($page == 1) {
+                            foreach ($file_list['dir'] as $file) { ?>
+                                <div class="grid-item">
+                                    <a href="?dir=<?= $current_dirs; ?>/<?= $file; ?>">
                                         <div class="folder">
-                                            <i class="bi bi-folder"></i>
-                                            <span><?=$file;?></span>
+                                            <span class="bi bi-folder-fill"></span>
+                                            <p><?= $file; ?></p>
                                         </div>
                                     </a>
-                                   
+                                </div>
+                        <?php }
+                        } ?>
+
+                        <?php foreach (array_page($file_list['file'], $page) as $file) {
+                            $ext = strrchr(strtolower($file), '.'); ?>
+                            <div class="grid-item">
+                                <?php if (in_array($ext, ['.jpg', '.png', '.jpeg'])) { ?>
+                                    <a href="/<?= $current_dirs; ?>/<?= $file; ?>">
+                                        <img src="<?=get_thumb($current_dirs.'/'.$file); ?>" style="width: 100%;" />
+                                    </a>
+                                <?php } else { ?>
+
                                 <?php } ?>
-                            
-                        </div>
+                            </div>
 
                         <?php } ?>
 
                     </div>
+
+                    <?php echo get_page_html(count($file_list['file']), $page); ?>
                 </div>
             </div>
 
-            
+
         </div>
     </main>
     <footer class="footer bg-burlywood">
@@ -276,7 +450,7 @@ if(isset($_GET['dir']) && $_GET['dir']){
     <script src="http://www.7sbook.com/assets/js/jquery-3.6.0.min.js"></script>
     <script src="http://www.7sbook.com/assets/js/bootstrap.min.js"></script>
     <script src="http://www.7sbook.com/assets/js/zpl.js?v=1.5.3"></script>
-  
+
     <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
 
@@ -289,7 +463,7 @@ if(isset($_GET['dir']) && $_GET['dir']){
             // columnWidth: 200,
         });
         // layout Masonry after each image loads
-        $grid.imagesLoaded().progress( function() {
+        $grid.imagesLoaded().progress(function() {
             $grid.masonry('layout');
         });
     </script>
