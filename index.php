@@ -473,9 +473,9 @@ $page =  input('page', 'get', 1);
 
         </div>
     </footer>
-    <script src="http://www.7sbook.com/assets/js/jquery-3.6.0.min.js"></script>
-    <script src="http://www.7sbook.com/assets/js/bootstrap.min.js"></script>
-    <script src="http://www.7sbook.com/assets/js/zpl.js?v=1.5.3"></script>
+    <script src="https://www.7sbook.com/assets/js/jquery-3.6.0.min.js"></script>
+    <script src="https://www.7sbook.com/assets/js/bootstrap.min.js"></script>
+    <script src="https://www.7sbook.com/assets/js/zpl.js?v=1.5.3"></script>
 
     <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
