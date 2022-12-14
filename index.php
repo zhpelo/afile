@@ -203,9 +203,6 @@ function generate_thumb($filename, $thumbname) {
             $thumb_w = intval($img_w / $img_h * THUMB_H);
             $thumb_h = THUMB_H;
         }
-        // var_dump($img_w, $img_h);
-        // var_dump($thumb_w, $thumb_h);
-        // exit();
         $thumb = imagecreatetruecolor($thumb_w, $thumb_h);
         imagecopyresampled($thumb, $image, 0, 0, 0, 0, $thumb_w, $thumb_h, $img_w, $img_h);
         imagejpeg($thumb, $thumbname);
