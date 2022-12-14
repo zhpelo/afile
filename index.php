@@ -12,7 +12,6 @@ function get_root_dirs()
 function get_file_list($path)
 {
     $path = ROOT . '/' . $path;
-
     $arr = [
         'dir' => [],
         'file' => [],
@@ -22,6 +21,9 @@ function get_file_list($path)
         if ($dh = opendir($path)) {
             while (($file = readdir($dh)) !== false) {
                 if (in_array(substr($file, 0, 1), ['.', '#'])) continue;
+                
+                if (in_array($file, ['_files', 'index.php'])) continue;
+
                 $file_path = $path . '/' . $file;
                 if (is_dir($file_path)) {
                     $arr['dir'][] = $file;
@@ -287,6 +289,7 @@ $page =  input('page', 'get', 1);
     <meta name="description" content="本站共计收录了85万+篇的古诗词、近千篇文言文和一万多本中文公版电子书！且这些书籍都属于公共版权，您可以随意阅读、下载、分享、转发且不用担心任何版权问题！免费、合法、无需注册！">
     <link rel="shortcut icon" href="https://www.7sbook.com/assets/img/favicon.ico" />
     <link href="https://www.7sbook.com/assets/css/zpl.css?v=1.5.4" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/venobox@2.0.4/dist/venobox.min.css" />
 
     <script>
         var _hmt = _hmt || [];
@@ -344,6 +347,27 @@ $page =  input('page', 'get', 1);
             font-size: 1.2rem;
             line-height: 3rem;
         }
+        .grid-item {
+            width: 32.5%;
+            margin-bottom: 10px;
+        }
+
+        .grid-item .folder , .grid-item .file{
+            text-align: center;
+            background-color: #fff;
+            border-radius: 6px;
+            padding: 30px 0;
+        }
+
+        .grid-item .bi {
+            font-size: 5rem;
+            line-height: 5rem;
+            color: #ff9800;
+        }
+
+        .grid-item .folder p {
+            margin-bottom: 0;
+        }
     </style>
     <main class="container-fluid container-lg">
 
@@ -351,7 +375,7 @@ $page =  input('page', 'get', 1);
             <div class="col-md-3">
                 <div class="my-3 p-3 bg-burlywood rounded shadow-sm">
                     <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
-                        <h3 class="h6">文件列表</h3>
+                        <h3 class="h6">主目录</h3>
                         <a href="mailto:7sbook@duck.com">我要分享</a>
                     </div>
 
@@ -369,36 +393,9 @@ $page =  input('page', 'get', 1);
                 <div class="my-3 p-3 bg-burlywood rounded shadow-sm">
                     <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                         <h3 class="h6">文件列表</h3>
-
                     </div>
 
-                    <style>
-                        .grid-item {
-                            width: 32.5%;
-                            margin-bottom: 10px;
-                        }
-
-                        .grid-item .folder {
-                            text-align: center;
-                            background-color: #fff;
-                            border-radius: 6px;
-                            padding: 30px 0;
-
-                        }
-
-                        .grid-item .folder .bi {
-                            font-size: 5rem;
-                            line-height: 5rem;
-                            color: #ff9800;
-                        }
-
-                        .grid-item .folder p {
-                            margin-bottom: 0;
-                        }
-                    </style>
-
                     <div class="grid">
-
                         <?php if ($page == 1) {
                             foreach ($file_list['dir'] as $file) { ?>
                                 <div class="grid-item">
@@ -416,10 +413,17 @@ $page =  input('page', 'get', 1);
                             $ext = strrchr(strtolower($file), '.'); ?>
                             <div class="grid-item">
                                 <?php if (in_array($ext, ['.jpg', '.png', '.jpeg'])) { ?>
-                                    <a href="/<?= $current_dirs; ?>/<?= $file; ?>">
+                                    <a class="my-image-links" data-gall="gallery01" href="/<?= $current_dirs; ?>/<?= $file; ?>">
                                         <img src="<?=get_thumb($current_dirs.'/'.$file); ?>" style="width: 100%;" />
                                     </a>
                                 <?php } else { ?>
+
+                                    <a href="/<?= $current_dirs; ?>/<?= $file; ?>">
+                                        <div class="file">
+                                            <span class="bi bi-file-earmark"></span>
+                                            <p><?= $file; ?></p>
+                                        </div>
+                                    </a>
 
                                 <?php } ?>
                             </div>
@@ -453,6 +457,7 @@ $page =  input('page', 'get', 1);
 
     <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/venobox@2.0.4/dist/venobox.min.js"></script>
 
     <script>
         var $grid = $('.grid').masonry({
@@ -465,6 +470,15 @@ $page =  input('page', 'get', 1);
         // layout Masonry after each image loads
         $grid.imagesLoaded().progress(function() {
             $grid.masonry('layout');
+        });
+
+
+        new VenoBox({
+            selector: '.my-image-links',
+            numeration: true,
+            infinigall: true,
+            share: true,
+            spinner: 'rotating-plane'
         });
     </script>
 </body>
