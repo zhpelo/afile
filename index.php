@@ -64,7 +64,7 @@ function get_page_html($total, $page = 1, $per_page = 12)
     }
     $html = '<nav class="pager"><ul class="pagination">';
     if ($page > 4) {
-        $html .= "<li><a href=\"?dir={$current_dirs}&page=1\">首页</a></li>";
+        $html .= "<li><a href=\"?s={$current_dirs}&page=1\">首页</a></li>";
     }
     if ($page > 4) {
         $start_key = (int)$page - 4;
@@ -88,7 +88,7 @@ function get_page_html($total, $page = 1, $per_page = 12)
         if ((int)$page == $i) {
             $html .= "<li class=\"active\"><span>$i</span></li>";
         } else {
-            $html .= "<li><a href=\"?dir={$current_dirs}&page={$i}\">$i</a></li>";
+            $html .= "<li><a href=\"?s={$current_dirs}&page={$i}\">$i</a></li>";
         }
     }
 
@@ -96,7 +96,7 @@ function get_page_html($total, $page = 1, $per_page = 12)
         $html .= "<li class=\"disabled\"><span>...</span></li>";
     }
     if ($total_pages > 9) {
-        $html .= "<li><a href=\"?dir={$current_dirs}&page={$total_pages}\">尾页</a></li>";
+        $html .= "<li><a href=\"?s={$current_dirs}&page={$total_pages}\">尾页</a></li>";
     }
     $html .= '</ul></nav>';
     return $html;
@@ -229,6 +229,26 @@ function get_file_ext($file){
     return strrchr(strtolower($file), '.');
 }
 
+function get_breadcrumb($path){
+    $path_array = explode("/",$path);
+
+    $html = '<nav aria-label="breadcrumb"><ol class="breadcrumb">';
+    
+            // <li class="breadcrumb-item"><a href="#">Home</a></li>
+            // <li class="breadcrumb-item"><a href="#">Library</a></li>
+            // <li class="breadcrumb-item active" aria-current="page">Data</li>
+            $html .= "<li class=\"breadcrumb-item\"><a href=\"/\">主目录</a></li>";
+
+            foreach($path_array as $i => $item){
+                $url = implode('/',array_slice($path_array, 0,  $i+1));
+                $html .= "<li class=\"breadcrumb-item\"><a href=\"?s={$url}\">{$item}</a></li>";
+            }
+
+    $html .= '</ol></nav>';
+
+    echo $html;
+}
+
 /**
  * +------------------------
  * |     这是入口开始执行
@@ -265,14 +285,14 @@ $CONFIG = [
 //顶级目录列表
 $root_dirs = get_root_dirs();
 
-if (input('dir')) {
-    $current_dirs = str_replace(['.', '../'], "", input('dir'));
-} else {
-    $current_dirs = "";
-}
+$S = input('s','get','');
+
+$current_dirs = $S ? str_replace(['.', '../'], "", $S) : "";
 
 $file_list =  get_file_list($current_dirs);
 $page =  input('page', 'get', 1);
+
+
 
 ?>
 
@@ -329,7 +349,6 @@ $page =  input('page', 'get', 1);
                 <a href="https://www.7sbook.com/poetry/index.html">诗词</a>
                 <a href="https://www.7sbook.com/author/index.html">作者</a>
                 <a href="https://www.7sbook.com/category/名画/">名画</a>
-                <a class="active" href="https://www.7sbook.com/">文件</a>
             </nav>
         </div>
     </div>
@@ -368,6 +387,9 @@ $page =  input('page', 'get', 1);
         .grid-item .folder p {
             margin-bottom: 0;
         }
+        .breadcrumb{
+            margin-bottom: 0.2rem;
+        }
     </style>
     <main class="container-fluid container-lg">
 
@@ -381,7 +403,7 @@ $page =  input('page', 'get', 1);
 
                     <?php foreach ($root_dirs as $dir) { ?>
                         <div class="root_dir">
-                            <a href="?dir=<?= get_url_path($dir); ?>">
+                            <a href="?s=<?= get_url_path($dir); ?>">
                                 <i class="bi bi-folder"></i>
                                 <span><?= get_url_path($dir); ?></span>
                             </a>
@@ -392,14 +414,14 @@ $page =  input('page', 'get', 1);
             <div class="col-md-9">
                 <div class="my-3 p-3 bg-burlywood rounded shadow-sm">
                     <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
-                        <h3 class="h6">文件列表</h3>
+                    <?=get_breadcrumb($S);?>
                     </div>
 
                     <div class="grid">
                         <?php if ($page == 1) {
                             foreach ($file_list['dir'] as $file) { ?>
                                 <div class="grid-item">
-                                    <a href="?dir=<?= $current_dirs; ?>/<?= $file; ?>">
+                                    <a href="?s=<?= $current_dirs ?"{$current_dirs}/":""; ?><?= $file; ?>">
                                         <div class="folder">
                                             <span class="bi bi-folder-fill"></span>
                                             <p><?= $file; ?></p>
