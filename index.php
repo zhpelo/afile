@@ -187,7 +187,8 @@ function generate_thumb($filename, $thumbname) {
     }
     if (extension_loaded('imagick')) {
         $image = new Imagick($filename);
-        $image->thumbnailImage(THUMB_W);
+        // $image->thumbnailImage(THUMB_W);
+        $image->resizeImage(THUMB_W,0);
         $image->writeImage($thumbname);
         $image->destroy();
     } else {
