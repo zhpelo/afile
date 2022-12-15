@@ -452,7 +452,7 @@ if($S == "摄影"){
     <meta charset="utf-8">
     <meta name="theme-color" content="#5d6146" />
     <meta name="renderer" content="webkit">
-    <title>传硕公版书_传递文明的硕果_免费、合法、无需注册！</title>
+    <title><?=$S;?>文件分享|传硕公版书</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="keywords" content="免费电子书,传硕,公版书,公版書,公共版权,公版书籍网站,无版权书籍,公版书籍查询,七秒古诗词,七秒读书,七秒电子书,电子书下载,二十四史下载">
     <meta name="description" content="本站共计收录了85万+篇的古诗词、近千篇文言文和一万多本中文公版电子书！且这些书籍都属于公共版权，您可以随意阅读、下载、分享、转发且不用担心任何版权问题！免费、合法、无需注册！">
@@ -469,8 +469,6 @@ if($S == "摄影"){
             s.parentNode.insertBefore(hm, s);
         })();
     </script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6790232035711874" crossorigin="anonymous"></script>
-
     <style>
         .root_dir {
             font-size: 1.2rem;
@@ -535,16 +533,6 @@ if($S == "摄影"){
             </nav>
         </div>
     </div>
-
-    <div class="container-fluid container-lg mt-2">
-        <!-- 全站导航栏广告 -->
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6790232035711874" data-ad-slot="9324099010" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-    </div>
-
-
     <main class="container-fluid">
 
         <div class="row">
