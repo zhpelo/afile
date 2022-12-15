@@ -44,14 +44,14 @@ function get_file_list($path)
     return $arr;
 }
 
-function array_page($array, $page = 1, $per_page = 12)
+function array_page($array, $page = 1, $per_page = 24)
 {
     $start = ($page - 1) * $per_page;
 
     return array_slice($array, $start, $per_page);
 }
 
-function get_page_html($total, $page = 1, $per_page = 12)
+function get_page_html($total, $page = 1, $per_page = 24)
 {
     global $current_dirs;
 
@@ -230,10 +230,6 @@ function get_breadcrumb($path){
     $path_array = explode("/",$path);
 
     $html = '<nav aria-label="breadcrumb"><ol class="breadcrumb">';
-    
-            // <li class="breadcrumb-item"><a href="#">Home</a></li>
-            // <li class="breadcrumb-item"><a href="#">Library</a></li>
-            // <li class="breadcrumb-item active" aria-current="page">Data</li>
             $html .= "<li class=\"breadcrumb-item\"><a href=\"/\"><i class=\"bi bi-house\"></i></a></li>";
             foreach($path_array as $i => $item){
                 $url = implode('/',array_slice($path_array, 0,  $i+1));
@@ -248,6 +244,34 @@ function get_breadcrumb($path){
     $html .= '</ol></nav>';
 
     echo $html;
+}
+
+function get_file_icons($ext){
+    $icons = "";
+    switch ($ext) {
+        case '.txt':
+            $icons = "bi-file-earmark-text";
+            break;
+        case '.pdf':
+            $icons = "bi-file-earmark-pdf";
+            break;
+        case '.word':
+            $icons = "bi-file-earmark-word";
+            break;
+        case '.ttf':
+            $icons = "bi-filetype-ttf";
+            break;
+        case '.otf':
+            $icons = "bi-filetype-otf";
+            break;
+        case '.heic':
+            $icons = "bi-filetype-heic";
+            break;
+        default:
+            $icons = "bi-file-earmark";
+            break;
+    }
+    return $icons;
 }
 
 /**
@@ -322,6 +346,37 @@ $page =  input('page', 'get', 1);
         })();
     </script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6790232035711874" crossorigin="anonymous"></script>
+
+    <style>
+        .root_dir {
+            font-size: 1.2rem;
+            line-height: 3rem;
+        }
+        .grid-item {
+            /* width: 33.333%; */
+            padding: 5px;
+        }
+
+        .grid-item .folder , .grid-item .file{
+            text-align: center;
+            background-color: #fff;
+            border-radius: 6px;
+            padding: 30px 0;
+        }
+
+        .grid-item .bi {
+            font-size: 4rem;
+            line-height: 5rem;
+            color: #ff9800;
+        }
+
+        .grid-item .folder p {
+            margin-bottom: 0;
+        }
+        .breadcrumb{
+            margin-bottom: 0.2rem;
+        }
+    </style>
 </head>
 
 
@@ -362,36 +417,7 @@ $page =  input('page', 'get', 1);
         </script>
     </div>
 
-    <style>
-        .root_dir {
-            font-size: 1.2rem;
-            line-height: 3rem;
-        }
-        .grid-item {
-            width: 33.333%;
-            padding: 5px;
-        }
-
-        .grid-item .folder , .grid-item .file{
-            text-align: center;
-            background-color: #fff;
-            border-radius: 6px;
-            padding: 30px 0;
-        }
-
-        .grid-item .bi {
-            font-size: 4rem;
-            line-height: 5rem;
-            color: #ff9800;
-        }
-
-        .grid-item .folder p {
-            margin-bottom: 0;
-        }
-        .breadcrumb{
-            margin-bottom: 0.2rem;
-        }
-    </style>
+    
     <main class="container-fluid">
 
         <div class="row">
@@ -420,7 +446,7 @@ $page =  input('page', 'get', 1);
                     <div class="grid">
                         <?php if ($page == 1) {
                             foreach ($file_list['dir'] as $file) { ?>
-                                <div class="grid-item">
+                                <div class="grid-item col-6 col-md-4 col-lg-3">
                                     <a href="?s=<?= $current_dirs ?"{$current_dirs}/":""; ?><?= $file; ?>">
                                         <div class="folder">
                                             <span class="bi bi-folder-fill"></span>
@@ -430,10 +456,11 @@ $page =  input('page', 'get', 1);
                                 </div>
                         <?php }
                         } ?>
+                        
 
                         <?php foreach (array_page($file_list['file'], $page) as $file) {
                             $ext = strrchr(strtolower($file), '.'); ?>
-                            <div class="grid-item">
+                            <div class="grid-item col-6 col-md-4 col-lg-3">
                                 <?php if (in_array($ext, ['.jpg', '.png', '.jpeg'])) { ?>
                                     <a class="my-image-links" data-gall="gallery01" href="/<?= $current_dirs; ?>/<?= $file; ?>">
                                         <img src="<?=get_thumb($current_dirs.'/'.$file); ?>" style="width: 100%;" />
@@ -442,7 +469,7 @@ $page =  input('page', 'get', 1);
 
                                     <a href="/<?= $current_dirs; ?>/<?= $file; ?>">
                                         <div class="file">
-                                            <span class="bi bi-file-earmark"></span>
+                                            <span class="bi <?=get_file_icons($ext);?>"></span>
                                             <p><?= $file; ?></p>
                                         </div>
                                     </a>
@@ -477,8 +504,8 @@ $page =  input('page', 'get', 1);
     <script src="https://www.7sbook.com/assets/js/bootstrap.min.js"></script>
     <script src="https://www.7sbook.com/assets/js/zpl.js?v=1.5.3"></script>
 
-    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
-    <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/venobox@2.0.4/dist/venobox.min.js"></script>
 
     <script>
