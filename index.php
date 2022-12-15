@@ -553,7 +553,7 @@ if($S == "摄影"){
                 </div>
             </div>
             <div class="col-md-10">
-                <?php if ($page == 1) {?>
+                <?php if ($page == 1 && count($file_list['dir'])) {?>
                 <div class="mt-3 p-3 bg-burlywood rounded shadow-sm">
                     <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                         <?= get_breadcrumb($S); ?>
@@ -573,19 +573,19 @@ if($S == "摄影"){
                     
                 </div>
                 <?php } ?>
+                <?php if (count($file_list['file'])) {?>
                 <div class="mt-3 p-3 bg-burlywood rounded shadow-sm">
-                    <?php if ($page != 1) {?>
-                    <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
-                        <?= get_breadcrumb($S); ?>
-                    </div>
-                    <?php } ?>
-
-
-                    <?php get_list_layout($file_list['file'],$layout);?>
-                
-
-                    <?php echo get_page_html(count($file_list['file']), $page); ?>
+                    <?php 
+                        if ($page != 1 || !count($file_list['dir'])) {
+                            echo '<div class="d-flex justify-content-between border-bottom pb-2 mb-2">';
+                            get_breadcrumb($S);
+                            echo '</div>';
+                        } 
+                        get_list_layout($file_list['file'],$layout);
+                        get_page_html(count($file_list['file']), $page); 
+                    ?>
                 </div>
+                <?php } ?>
             </div>
 
 
