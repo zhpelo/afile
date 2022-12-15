@@ -211,7 +211,11 @@ function generate_thumb($filename, $thumbname) {
     }
 }
 function get_thumb($file){
+    
     $file_path = ROOT . '/' .$file;
+    if(filesize($file_path) > 1024*1024*20 ){
+        return "https://iph.href.lu/800x600?text=内容过大无法预览";
+    }
     $thumb_path = '_files/thumbs/'.md5_file($file_path).'.jpg';
 
     if(!is_file($thumb_path)){
