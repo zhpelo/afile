@@ -21,7 +21,7 @@ function get_file_list($path)
         if ($dh = opendir($path)) {
             while (($file = readdir($dh)) !== false) {
                 if (in_array(substr($file, 0, 1), ['.', '#'])) continue;
-                
+
                 if (in_array($file, ['_files', 'index.php'])) continue;
 
                 $file_path = $path . '/' . $file;
@@ -181,14 +181,15 @@ function real_path($path)
     return $real_path ? str_replace('\\', '/', $real_path) : false;
 }
 
-function generate_thumb($filename, $thumbname) {
+function generate_thumb($filename, $thumbname)
+{
     if (!file_exists('_files/thumbs')) {
         mkdir('_files/thumbs');
     }
     if (extension_loaded('imagick')) {
         $image = new Imagick($filename);
         // $image->thumbnailImage(THUMB_W);
-        $image->resizeImage(THUMB_W,0,imagick::FILTER_LANCZOS, 1);
+        $image->resizeImage(THUMB_W, 0, imagick::FILTER_LANCZOS, 1);
         $image->writeImage($thumbname);
         $image->destroy();
     } else {
@@ -211,47 +212,49 @@ function generate_thumb($filename, $thumbname) {
         imagedestroy($image);
     }
 }
-function get_thumb($file){
-    
-    $file_path = ROOT . '/' .$file;
-    if(filesize($file_path) > 1024*1024*20 ){
+function get_thumb($file)
+{
+
+    $file_path = ROOT . '/' . $file;
+    if (filesize($file_path) > 1024 * 1024 * 20) {
         return "https://iph.href.lu/800x600?text=内容过大无法预览";
     }
-    $thumb_path = '_files/thumbs/'.md5_file($file_path).'.jpg';
+    $thumb_path = '_files/thumbs/' . md5_file($file_path) . '.jpg';
 
-    if(!is_file($thumb_path)){
-        generate_thumb($file_path,$thumb_path);
+    if (!is_file($thumb_path)) {
+        generate_thumb($file_path, $thumb_path);
     }
 
     return $thumb_path;
-
 }
 
-function get_file_ext($file){
+function get_file_ext($file)
+{
     return strrchr(strtolower($file), '.');
 }
 
-function get_breadcrumb($path){
-    $path_array = explode("/",$path);
+function get_breadcrumb($path)
+{
+    $path_array = explode("/", $path);
 
     $html = '<nav aria-label="breadcrumb"><ol class="breadcrumb">';
-            $html .= "<li class=\"breadcrumb-item\"><a href=\"/\"><i class=\"bi bi-house\"></i></a></li>";
-            foreach($path_array as $i => $item){
-                $url = implode('/',array_slice($path_array, 0,  $i+1));
-                if(end($path_array) == $item){
-                    $html .= "<li class=\"breadcrumb-item active\" aria-current=\"page\">{$item}</li>";
-                }else{
-                    $html .= "<li class=\"breadcrumb-item\"><a href=\"?s={$url}\">{$item}</a></li>";
-                }
-                
-            }
+    $html .= "<li class=\"breadcrumb-item\"><a href=\"/\"><i class=\"bi bi-house\"></i></a></li>";
+    foreach ($path_array as $i => $item) {
+        $url = implode('/', array_slice($path_array, 0,  $i + 1));
+        if (end($path_array) == $item) {
+            $html .= "<li class=\"breadcrumb-item active\" aria-current=\"page\">{$item}</li>";
+        } else {
+            $html .= "<li class=\"breadcrumb-item\"><a href=\"?s={$url}\">{$item}</a></li>";
+        }
+    }
 
     $html .= '</ol></nav>';
 
     echo $html;
 }
 
-function get_file_icons($ext){
+function get_file_icons($ext)
+{
     $icons = "";
     switch ($ext) {
         case '.txt':
@@ -279,6 +282,118 @@ function get_file_icons($ext){
     return $icons;
 }
 
+function human_size($FileSize){
+    $Unit="Byte";
+     
+    if($FileSize>=pow(2,40)){
+        //文件大小除以二的四十次方并保留1位小数
+        $FileSize=round($FileSize/pow(2,40),1);
+        $Unit="TB";
+    }else if($FileSize>=pow(2,30)){
+        $FileSize=round($FileSize/pow(2,30),1);
+        $Unit="GB";
+    }else if($FileSize>=pow(2,20)){
+        $FileSize=round($FileSize/pow(2,20),1);
+        $Unit="MB";
+    }else if($FileSize>=pow(2,10)){
+        $FileSize=round($FileSize/pow(2,10),1);
+        $Unit="KB";
+    }else{
+        $Unit="Byte";
+    }
+    return $FileSize.$Unit;
+}
+
+function get_file_size($file){
+    $file_path = ROOT . '/' . $file;
+    return human_size(filesize($file_path));
+}
+
+function get_list_layout($array, $layout)
+{
+    $layout = "get_{$layout}_layout_html";
+    return $layout($array);
+}
+
+function get_table_layout_html($array)
+{
+    global $current_dirs;
+    global $page;
+    ?>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">文件名</th>
+                <th scope="col">文件大小</th>
+                <th scope="col">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach (array_page($array, $page) as $file) { ?>
+            <tr>
+                <td>
+                    <a href="/<?= $current_dirs; ?>/<?= $file; ?>">
+                        <span class="bi <?= get_file_icons($ext); ?>"></span>
+                        <?= $file; ?>
+                    </a>
+                </td>
+                <td>
+                    <?= get_file_size("{$current_dirs}/{$file}");?></td>
+                <td>
+                    <a href="/<?= $current_dirs; ?>/<?= $file; ?>" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-download"></i>
+                
+                    </a>
+                    <a href="/<?= $current_dirs; ?>/<?= $file; ?>" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-eye"></i>
+                    
+                    </a>
+
+                    <!-- <button type="button" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-link"></i>
+                    </button> -->
+                    
+                </td>
+            </tr>
+
+        <?php } ?>
+        </tbody>
+    </table>
+
+    <?php
+}
+
+function get_grid_layout_html($array)
+{
+    global $current_dirs;
+    global $page;
+    ?>
+    <div class="grid">
+    <?php foreach (array_page($array, $page) as $file) {
+        $ext = strrchr(strtolower($file), '.'); ?>
+        <div class="grid-item col-6 col-md-4 col-lg-3">
+            <?php if (in_array($ext, ['.jpg', '.png', '.jpeg'])) { ?>
+                <a class="my-image-links" data-gall="gallery01" href="/<?= $current_dirs; ?>/<?= $file; ?>">
+                    <img src="<?=get_thumb($current_dirs.'/'.$file); ?>" style="width: 100%;" />
+                </a>
+            <?php } else { ?>
+
+                <a href="/<?= $current_dirs; ?>/<?= $file; ?>">
+                    <div class="file">
+                        <span class="bi <?=get_file_icons($ext);?>"></span>
+                        <p><?= $file; ?></p>
+                    </div>
+                </a>
+
+            <?php } ?>
+        </div>
+
+    <?php } ?>
+
+</div>
+    <?php
+}
+
 /**
  * +------------------------
  * |     这是入口开始执行
@@ -286,7 +401,7 @@ function get_file_icons($ext){
  */
 
 // 获取当前文件的上级目录
-define('WEBURL', "https://zfile.tool"); 
+define('WEBURL', "https://zfile.tool");
 define("ROOT", dirname(__FILE__));
 define('THUMB_W', 300);
 define('THUMB_H', 1800); // Set thumbnail size in pixels
@@ -317,12 +432,16 @@ $CONFIG = [
 //顶级目录列表
 $root_dirs = get_root_dirs();
 
-$S = input('s','get','');
+$S = input('s', 'get', '');
 
 $current_dirs = $S ? str_replace(['.', '../'], "", $S) : "";
 
 $file_list =  get_file_list($current_dirs);
 $page =  input('page', 'get', 1);
+$layout = input('layout', 'get', 'table');
+if($S == "摄影"){
+    $layout = "grid";
+}
 
 ?>
 
@@ -357,12 +476,14 @@ $page =  input('page', 'get', 1);
             font-size: 1.2rem;
             line-height: 3rem;
         }
+
         .grid-item {
             /* width: 33.333%; */
             padding: 5px;
         }
 
-        .grid-item .folder , .grid-item .file{
+        .grid-item .folder,
+        .grid-item .file {
             text-align: center;
             background-color: #fff;
             border-radius: 6px;
@@ -378,7 +499,8 @@ $page =  input('page', 'get', 1);
         .grid-item .folder p {
             margin-bottom: 0;
         }
-        .breadcrumb{
+
+        .breadcrumb {
             margin-bottom: 0.2rem;
         }
     </style>
@@ -422,7 +544,7 @@ $page =  input('page', 'get', 1);
         </script>
     </div>
 
-    
+
     <main class="container-fluid">
 
         <div class="row">
@@ -443,48 +565,36 @@ $page =  input('page', 'get', 1);
                 </div>
             </div>
             <div class="col-md-10">
+                <?php if ($page == 1) {?>
                 <div class="mt-3 p-3 bg-burlywood rounded shadow-sm">
                     <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
-                    <?=get_breadcrumb($S);?>
+                        <?= get_breadcrumb($S); ?>
                     </div>
-
                     <div class="grid">
-                        <?php if ($page == 1) {
-                            foreach ($file_list['dir'] as $file) { ?>
-                                <div class="grid-item col-6 col-md-4 col-lg-3">
-                                    <a href="?s=<?= $current_dirs ?"{$current_dirs}/":""; ?><?= $file; ?>">
-                                        <div class="folder">
-                                            <span class="bi bi-folder-fill"></span>
-                                            <p><?= $file; ?></p>
-                                        </div>
-                                    </a>
+                    <?php foreach ($file_list['dir'] as $file) { ?>
+                        <div class="grid-item col-6 col-md-4 col-lg-3">
+                            <a href="?s=<?= $current_dirs ?"{$current_dirs}/":""; ?><?= $file; ?>">
+                                <div class="folder">
+                                    <span class="bi bi-folder-fill"></span>
+                                    <p><?= $file; ?></p>
                                 </div>
-                        <?php }
-                        } ?>
-                        
-
-                        <?php foreach (array_page($file_list['file'], $page) as $file) {
-                            $ext = strrchr(strtolower($file), '.'); ?>
-                            <div class="grid-item col-6 col-md-4 col-lg-3">
-                                <?php if (in_array($ext, ['.jpg', '.png', '.jpeg'])) { ?>
-                                    <a class="my-image-links" data-gall="gallery01" href="/<?= $current_dirs; ?>/<?= $file; ?>">
-                                        <img src="<?=get_thumb($current_dirs.'/'.$file); ?>" style="width: 100%;" />
-                                    </a>
-                                <?php } else { ?>
-
-                                    <a href="/<?= $current_dirs; ?>/<?= $file; ?>">
-                                        <div class="file">
-                                            <span class="bi <?=get_file_icons($ext);?>"></span>
-                                            <p><?= $file; ?></p>
-                                        </div>
-                                    </a>
-
-                                <?php } ?>
-                            </div>
-
-                        <?php } ?>
-
+                            </a>
+                        </div>
+                    <?php } ?>
                     </div>
+                    
+                </div>
+                <?php } ?>
+                <div class="mt-3 p-3 bg-burlywood rounded shadow-sm">
+                    <?php if ($page != 1) {?>
+                    <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                        <?= get_breadcrumb($S); ?>
+                    </div>
+                    <?php } ?>
+
+
+                    <?php get_list_layout($file_list['file'],$layout);?>
+                
 
                     <?php echo get_page_html(count($file_list['file']), $page); ?>
                 </div>
