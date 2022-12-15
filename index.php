@@ -234,11 +234,15 @@ function get_breadcrumb($path){
             // <li class="breadcrumb-item"><a href="#">Home</a></li>
             // <li class="breadcrumb-item"><a href="#">Library</a></li>
             // <li class="breadcrumb-item active" aria-current="page">Data</li>
-            $html .= "<li class=\"breadcrumb-item\"><a href=\"/\">主目录</a></li>";
-
+            $html .= "<li class=\"breadcrumb-item\"><a href=\"/\"><i class=\"bi bi-house\"></i></a></li>";
             foreach($path_array as $i => $item){
                 $url = implode('/',array_slice($path_array, 0,  $i+1));
-                $html .= "<li class=\"breadcrumb-item\"><a href=\"?s={$url}\">{$item}</a></li>";
+                if(end($path_array) == $item){
+                    $html .= "<li class=\"breadcrumb-item active\" aria-current=\"page\">{$item}</li>";
+                }else{
+                    $html .= "<li class=\"breadcrumb-item\"><a href=\"?s={$url}\">{$item}</a></li>";
+                }
+                
             }
 
     $html .= '</ol></nav>';
@@ -253,6 +257,7 @@ function get_breadcrumb($path){
  */
 
 // 获取当前文件的上级目录
+define('WEBURL', "https://zfile.tool"); 
 define("ROOT", dirname(__FILE__));
 define('THUMB_W', 300);
 define('THUMB_H', 1800); // Set thumbnail size in pixels
@@ -262,6 +267,7 @@ $exclude = [
     '..',
     '_files',
     '_temps',
+    'README.md',
 ];
 // 扫描$con目录下的所有文件
 
@@ -288,8 +294,6 @@ $current_dirs = $S ? str_replace(['.', '../'], "", $S) : "";
 
 $file_list =  get_file_list($current_dirs);
 $page =  input('page', 'get', 1);
-
-
 
 ?>
 
@@ -364,8 +368,8 @@ $page =  input('page', 'get', 1);
             line-height: 3rem;
         }
         .grid-item {
-            width: 32.5%;
-            margin-bottom: 10px;
+            width: 33.333%;
+            padding: 5px;
         }
 
         .grid-item .folder , .grid-item .file{
@@ -376,7 +380,7 @@ $page =  input('page', 'get', 1);
         }
 
         .grid-item .bi {
-            font-size: 5rem;
+            font-size: 4rem;
             line-height: 5rem;
             color: #ff9800;
         }
@@ -388,14 +392,13 @@ $page =  input('page', 'get', 1);
             margin-bottom: 0.2rem;
         }
     </style>
-    <main class="container-fluid container-lg">
+    <main class="container-fluid">
 
         <div class="row">
-            <div class="col-md-3">
-                <div class="my-3 p-3 bg-burlywood rounded shadow-sm">
+            <div class="col-md-2">
+                <div class="mt-3 p-3 bg-burlywood rounded shadow-sm">
                     <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                         <h3 class="h6">主目录</h3>
-                        <a href="mailto:7sbook@duck.com">我要分享</a>
                     </div>
 
                     <?php foreach ($root_dirs as $dir) { ?>
@@ -408,8 +411,8 @@ $page =  input('page', 'get', 1);
                     <?php } ?>
                 </div>
             </div>
-            <div class="col-md-9">
-                <div class="my-3 p-3 bg-burlywood rounded shadow-sm">
+            <div class="col-md-10">
+                <div class="mt-3 p-3 bg-burlywood rounded shadow-sm">
                     <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                     <?=get_breadcrumb($S);?>
                     </div>
@@ -483,7 +486,7 @@ $page =  input('page', 'get', 1);
             // options
             itemSelector: '.grid-item',
             percentPosition: true,
-            gutter: 10,
+            // gutter: 10,
             // columnWidth: 200,
         });
         // layout Masonry after each image loads
