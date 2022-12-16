@@ -459,7 +459,6 @@ if($S == "摄影"){
     <link rel="shortcut icon" href="https://www.7sbook.com/assets/img/favicon.ico" />
     <link href="https://www.7sbook.com/assets/css/zpl.css?v=1.5.4" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/venobox@2.0.4/dist/venobox.min.css" />
-
     <script>
         var _hmt = _hmt || [];
         (function() {
@@ -474,9 +473,7 @@ if($S == "摄影"){
             font-size: 1.2rem;
             line-height: 3rem;
         }
-
         .grid-item {
-            /* width: 33.333%; */
             padding: 5px;
         }
 
@@ -573,7 +570,6 @@ if($S == "摄影"){
                     
                 </div>
                 <?php } ?>
-                <?php if (count($file_list['file'])) {?>
                 <div class="mt-3 p-3 bg-burlywood rounded shadow-sm">
                     <?php 
                         if ($page != 1 || !count($file_list['dir'])) {
@@ -581,11 +577,14 @@ if($S == "摄影"){
                             get_breadcrumb($S);
                             echo '</div>';
                         } 
-                        get_list_layout($file_list['file'],$layout);
-                        get_page_html(count($file_list['file']), $page); 
+                        if (count($file_list['file'])) {
+                            get_list_layout($file_list['file'],$layout);
+                            get_page_html(count($file_list['file']), $page); 
+                        }else{
+                            echo "<br><p>很抱歉！此目录还没有可以下载的文件 ~~</p>";
+                        }
                     ?>
                 </div>
-                <?php } ?>
             </div>
 
 
@@ -600,7 +599,6 @@ if($S == "摄影"){
                 <li><a href="https://www.7sbook.com/contact-us/">联系我们</a></li>
             </ul>
             <p class="copyright">Copyright&nbsp;©&nbsp;2021-2022 传硕公版书</p>
-
         </div>
     </footer>
     <script src="https://www.7sbook.com/assets/js/jquery-3.6.0.min.js"></script>
@@ -613,18 +611,12 @@ if($S == "摄影"){
 
     <script>
         var $grid = $('.grid').masonry({
-            // options
             itemSelector: '.grid-item',
             percentPosition: true,
-            // gutter: 10,
-            // columnWidth: 200,
         });
-        // layout Masonry after each image loads
         $grid.imagesLoaded().progress(function() {
             $grid.masonry('layout');
         });
-
-
         new VenoBox({
             selector: '.my-image-links',
             numeration: true,
