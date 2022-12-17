@@ -54,11 +54,7 @@ function array_page($array, $page = 1, $per_page = 24)
 function get_page_html($total, $page = 1, $per_page = 24)
 {
     global $current_dirs;
-
     $total_pages = ceil($total / $per_page);
-
-
-
     if ($total_pages < 2) {
         return false;
     }
@@ -249,8 +245,7 @@ function get_breadcrumb($path)
     }
 
     $html .= '</ol></nav>';
-
-    echo $html;
+    return $html;
 }
 
 function get_file_icons($ext)
@@ -309,13 +304,13 @@ function get_file_size($file){
     return human_size(filesize($file_path));
 }
 
-function get_list_layout($array, $layout)
+function echo_list_layout($array, $layout)
 {
-    $layout = "get_{$layout}_layout_html";
+    $layout = "echo_{$layout}_layout_html";
     return $layout($array);
 }
 
-function get_table_layout_html($array)
+function echo_table_layout_html($array)
 {
     global $current_dirs;
     global $page;
@@ -363,7 +358,7 @@ function get_table_layout_html($array)
     <?php
 }
 
-function get_grid_layout_html($array)
+function echo_grid_layout_html($array)
 {
     global $current_dirs;
     global $page;
@@ -406,21 +401,9 @@ define("ROOT", dirname(__FILE__));
 define('THUMB_W', 300);
 define('THUMB_H', 1800); // Set thumbnail size in pixels
 
-$exclude = [
-    '.',
-    '..',
-    '_files',
-    '_temps',
-    'README.md',
-];
-// 扫描$con目录下的所有文件
-
 $CONFIG = [
-
     'doc_root' => real_path($_SERVER['DOCUMENT_ROOT']),
-    // cache
-    'cache' => true,
-    'cache_key' => 0,
+
     'storage_path' => '_files',
 
     // exclude files directories regex
@@ -431,18 +414,14 @@ $CONFIG = [
 
 //顶级目录列表
 $root_dirs = get_root_dirs();
-
 $S = input('s', 'get', '');
-
 $current_dirs = $S ? str_replace(['.', '../'], "", $S) : "";
-
 $file_list =  get_file_list($current_dirs);
 $page =  input('page', 'get', 1);
 $layout = input('layout', 'get', 'table');
 if($S == "摄影"){
     $layout = "grid";
 }
-
 ?>
 
 <!doctype html>
@@ -526,19 +505,17 @@ if($S == "摄影"){
                 <a href="https://www.7sbook.com/category/文章/">文章</a>
                 <a href="https://www.7sbook.com/poetry/index.html">诗词</a>
                 <a href="https://www.7sbook.com/author/index.html">作者</a>
-                <a href="https://www.7sbook.com/category/名画/">名画</a>
+                <a class="active" href="https://file.7sbook.com">文件</a>
             </nav>
         </div>
     </div>
     <main class="container-fluid">
-
         <div class="row">
             <div class="col-md-2">
                 <div class="mt-3 p-3 bg-burlywood rounded shadow-sm">
                     <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                         <h3 class="h6">主目录</h3>
                     </div>
-
                     <?php foreach ($root_dirs as $dir) { ?>
                         <div class="root_dir">
                             <a href="?s=<?= get_url_path($dir); ?>">
@@ -553,7 +530,7 @@ if($S == "摄影"){
                 <?php if ($page == 1 && count($file_list['dir'])) {?>
                 <div class="mt-3 p-3 bg-burlywood rounded shadow-sm">
                     <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
-                        <?= get_breadcrumb($S); ?>
+                        <?=get_breadcrumb($S); ?>
                     </div>
                     <div class="grid">
                     <?php foreach ($file_list['dir'] as $file) { ?>
@@ -573,13 +550,11 @@ if($S == "摄影"){
                 <div class="mt-3 p-3 bg-burlywood rounded shadow-sm">
                     <?php 
                         if ($page != 1 || !count($file_list['dir'])) {
-                            echo '<div class="d-flex justify-content-between border-bottom pb-2 mb-2">';
-                            get_breadcrumb($S);
-                            echo '</div>';
+                            echo '<div class="d-flex justify-content-between border-bottom pb-2 mb-2">' .get_breadcrumb($S). '</div>';
                         } 
                         if (count($file_list['file'])) {
-                            get_list_layout($file_list['file'],$layout);
-                            get_page_html(count($file_list['file']), $page); 
+                            echo_list_layout($file_list['file'],$layout);
+                            echo get_page_html(count($file_list['file']), $page); 
                         }else{
                             echo "<br><p>很抱歉！此目录还没有可以下载的文件 ~~</p>";
                         }
