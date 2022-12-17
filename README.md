@@ -2,4 +2,8 @@
 
 演示网站： https://file.7sbook.com
 
-演示截图：![演示截图01](demo01.png)
+演示截图：
+
+![演示截图01](demo01.png)
+
+![演示截图02](demo02.png)
