@@ -327,7 +327,7 @@ function echo_table_layout_html($array)
         <?php foreach (array_page($array, $page) as $file) { ?>
             <tr>
                 <td>
-                    <a href="/<?= $current_dirs; ?>/<?= $file; ?>">
+                    <a href="<?= $current_dirs ?"/$current_dirs":""; ?>/<?= $file; ?>">
                         <span class="bi <?= get_file_icons($ext); ?>"></span>
                         <?= $file; ?>
                     </a>
@@ -335,11 +335,11 @@ function echo_table_layout_html($array)
                 <td>
                     <?= get_file_size("{$current_dirs}/{$file}");?></td>
                 <td>
-                    <a href="/<?= $current_dirs; ?>/<?= $file; ?>" class="btn btn-outline-primary btn-sm">
+                    <a href="<?= $current_dirs ?"/$current_dirs":""; ?>/<?= $file; ?>" class="btn btn-outline-primary btn-sm">
                         <i class="bi bi-download"></i>
                 
                     </a>
-                    <a href="/<?= $current_dirs; ?>/<?= $file; ?>" class="btn btn-outline-primary btn-sm">
+                    <a href="<?= $current_dirs ?"/$current_dirs":""; ?>/<?= $file; ?>" class="btn btn-outline-primary btn-sm">
                         <i class="bi bi-eye"></i>
                     
                     </a>
