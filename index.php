@@ -398,15 +398,12 @@ function echo_grid_layout_html($array)
 // 获取当前文件的上级目录
 define('WEBURL', "https://zfile.tool");
 define("ROOT", dirname(__FILE__));
-define('THUMB_W', 300);
+define('THUMB_W', 600);
 define('THUMB_H', 1800); // Set thumbnail size in pixels
 
 $CONFIG = [
     'doc_root' => real_path($_SERVER['DOCUMENT_ROOT']),
-
     'storage_path' => '_files',
-
-    // exclude files directories regex
     'files_exclude' => '',
     'dirs_exclude' => '',
     'allow_symlinks' => true,
@@ -416,6 +413,18 @@ $CONFIG = [
 $root_dirs = get_root_dirs();
 $S = input('s', 'get', '');
 $current_dirs = $S ? str_replace(['.', '../'], "", $S) : "";
+
+ //指定的字符串
+ $no_access = ['_file','php'];
+
+ preg_match_all('#('.implode('|', $no_access).')#', $current_dirs, $wordsFound);
+
+ if($wordsFound[0]){
+    http_response_code(401);
+    exit("禁止访问");
+ }
+
+
 $file_list =  get_file_list($current_dirs);
 $page =  input('page', 'get', 1);
 $layout = input('layout', 'get', 'table');
