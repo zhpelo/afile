@@ -1,45 +1,41 @@
 <?php
-// get root dirs
+
+
 function get_root_dirs()
 {
     $root_dirs = glob(ROOT . '/*', GLOB_ONLYDIR | GLOB_NOSORT);
 
     if (empty($root_dirs)) return array();
     return array_filter($root_dirs, function ($dir) {
-        return !is_exclude($dir, true, is_link($dir));
+        return !is_exclude($dir);
     });
 }
 function get_file_list($path)
 {
-    $path = ROOT . '/' . $path;
+
+    $path = ROOT. ($path ? "/{$path}" :"" );
+    
     $arr = [
         'dir' => [],
         'file' => [],
         'link' => [],
     ];
-    if (is_dir($path)) {
-        if ($dh = opendir($path)) {
-            while (($file = readdir($dh)) !== false) {
-                if (in_array(substr($file, 0, 1), ['.', '#'])) continue;
+    if (!is_dir($path)) return false;
 
-                if (in_array($file, ['_files', 'index.php'])) continue;
+    if (! $dh = opendir($path)) return false;
 
-                $file_path = $path . '/' . $file;
-                if (is_dir($file_path)) {
-                    $arr['dir'][] = $file;
-                } elseif (is_file($file_path)) {
-                    $arr['file'][] = $file;
-                } elseif (is_link($file_path)) {
-                    $arr['link'][] = $file;
-                }
-            }
-            closedir($dh);
-        } else {
-            return false;
+    while (($file = readdir($dh)) !== false) {
+        $file_path = $path.'/'.$file;
+
+        if(is_exclude($file_path)) continue;
+
+        if (is_dir($file_path)) {
+            $arr['dir'][] = $file;
+        } elseif (is_file($file_path)) {
+            $arr['file'][] = $file;
         }
-    } else {
-        return false;
     }
+    closedir($dh);
 
     return $arr;
 }
@@ -47,7 +43,6 @@ function get_file_list($path)
 function array_page($array, $page = 1, $per_page = 24)
 {
     $start = ($page - 1) * $per_page;
-
     return array_slice($array, $start, $per_page);
 }
 
@@ -112,36 +107,33 @@ function input($key = null, $method = 'get', $default = null, $verify = null)
     }
     return $val;
 }
-// is exclude
-function is_exclude($path = false, $is_dir = true, $symlinked = false)
+//判断是否在排除规则中
+function is_exclude($path = false)
 {
     global $CONFIG;
     // early exit
     if (!$path || $path === ROOT) return;
+    //获取文件的相对路径
+    $path_relative = root_relative($path);
 
-    // exclude all root-relative paths that start with /_files* (reserved for any files and folders to be ignored and hidden from Files app)
-    if (strpos('/' . root_relative($path), '/_files') !== false) return true;
+    if (in_array(substr(basename($path_relative), 0, 1), ['.', '#'])) return true;
+    // 排除所有以 /_files* 开头的根目录相对路径（为要忽略和隐藏在文件应用程序中的任何文件和文件夹保留）
+    if (strpos('/' . $path_relative, '/_files') !== false) return true;
+    // 排除 自身PHP程序文件
 
-    // exclude files PHP application
     if ($path === __FILE__) return true;
 
-    // symlinks not allowed
-    if ($symlinked && !$CONFIG['allow_symlinks']) return true;
+    foreach($CONFIG['exclude'] as $pattern){
+        $pattern = strtr($pattern, array(
+            '*' => '.*?', // 0 or more (lazy) - asterisk (*)
+            '?' => '.', // 1 character - question mark (?)
+        ));
 
-    // exclude storage path
-    if ($CONFIG['storage_path'] && is_within_path($path, $CONFIG['storage_path'])) return true;
-
-    // dirs_exclude: check root relative dir path
-    if ($CONFIG['dirs_exclude']) {
-        $dirname = $is_dir ? $path : dirname($path);
-        if ($dirname !== ROOT && preg_match($CONFIG['dirs_exclude'], substr($dirname, strlen(ROOT)))) return true;
+        if(preg_match("/$pattern/", $path_relative)){
+            return true;
+        }
     }
 
-    // files_exclude: check vs basename
-    if (!$is_dir) {
-        $basename = basename($path);
-        if ($CONFIG['files_exclude'] && preg_match($CONFIG['files_exclude'], $basename)) return true;
-    }
 }
 function root_relative($dir)
 {
@@ -180,7 +172,7 @@ function real_path($path)
 function generate_thumb($filename, $thumbname)
 {
     if (!file_exists('_files/thumbs')) {
-        mkdir('_files/thumbs');
+        mkdir('_files/thumbs', 0755, true) or exit("缓存目录创建失败,请检查文件权限！");
     }
     if (extension_loaded('imagick')) {
         $image = new Imagick($filename);
@@ -215,7 +207,7 @@ function get_thumb($file)
     if (filesize($file_path) > 1024 * 1024 * 20) {
         return "https://iph.href.lu/800x600?text=内容过大无法预览";
     }
-    $thumb_path = '_files/thumbs/' . md5_file($file_path) . '.jpg';
+    $thumb_path = '_files/thumbs/'.md5($file_path)."_".THUMB_W."x".THUMB_H .'.jpg';
 
     if (!is_file($thumb_path)) {
         generate_thumb($file_path, $thumb_path);
@@ -394,29 +386,38 @@ function echo_grid_layout_html($array)
  * |     这是入口开始执行
  * +------------------------
  */
-
-// 获取当前文件的上级目录
+//不限制运行内存
+ini_set("memory_limit","-1");
+//获取当前文件的上级目录
 define('WEBURL', "https://zfile.tool");
+//程序根目录地址
 define("ROOT", dirname(__FILE__));
+//缩略图宽度
 define('THUMB_W', 600);
-define('THUMB_H', 1800); // Set thumbnail size in pixels
+//缩略图高度
+define('THUMB_H', 1800); 
 
 $CONFIG = [
+    //文件共享根目录 (绝对路径，默认是index.php文件的同目录)
     'doc_root' => real_path($_SERVER['DOCUMENT_ROOT']),
-    'storage_path' => '_files',
-    'files_exclude' => '',
-    'dirs_exclude' => '',
-    'allow_symlinks' => true,
+    //排除的文件和目录
+    'exclude' => [
+        'README.md',
+        '*.php',
+        'demo*.png',
+    ],
 ];
+
 
 //顶级目录列表
 $root_dirs = get_root_dirs();
 $S = input('s', 'get', '');
+
+//当前访问的文件目录
 $current_dirs = $S ? str_replace(['.', '../'], "", $S) : "";
 
  //指定的字符串
  $no_access = ['_file','php'];
-
  preg_match_all('#('.implode('|', $no_access).')#', $current_dirs, $wordsFound);
 
  if($wordsFound[0]){
@@ -428,6 +429,7 @@ $current_dirs = $S ? str_replace(['.', '../'], "", $S) : "";
 $file_list =  get_file_list($current_dirs);
 $page =  input('page', 'get', 1);
 $layout = input('layout', 'get', 'table');
+
 if($S == "摄影"){
     $layout = "grid";
 }
